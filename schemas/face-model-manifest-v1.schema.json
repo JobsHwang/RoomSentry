@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Face Model Manifest v1",
+  "$comment": "source_url and license_url must be credential-free HTTPS URLs without queries or fragments. Their patterns exclude the userinfo delimiter from the authority; the canonical parser additionally validates parsed hostname/username/password components.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "backend",
+    "model_format",
+    "role",
+    "model_id",
+    "upstream_revision",
+    "filename",
+    "sha256",
+    "size_bytes",
+    "source_url",
+    "license_spdx",
+    "license_url",
+    "input_width",
+    "input_height",
+    "input_color_space",
+    "landmark_count",
+    "embedding_dimension",
+    "preprocessing_revision",
+    "unsafe_pickle",
+    "automatic_download",
+    "identity_decision_authority"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "backend": {"const": "opencv_dnn"},
+    "model_format": {"const": "ONNX"},
+    "role": {"enum": ["detector", "embedding"]},
+    "model_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,128}$"},
+    "upstream_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "filename": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,199}$"
+    },
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "size_bytes": {"type": "integer", "minimum": 1, "maximum": 1073741824},
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[^/?#@\\s]+(?:/[^?#\\s]*)?$",
+      "maxLength": 2048
+    },
+    "license_spdx": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9.+-]{0,79}$"
+    },
+    "license_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[^/?#@\\s]+(?:/[^?#\\s]*)?$",
+      "maxLength": 2048
+    },
+    "input_width": {"type": "integer", "minimum": 16, "maximum": 8192},
+    "input_height": {"type": "integer", "minimum": 16, "maximum": 8192},
+    "input_color_space": {"const": "BGR"},
+    "landmark_count": {"const": 5},
+    "embedding_dimension": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "integer", "minimum": 1, "maximum": 4096}
+      ]
+    },
+    "preprocessing_revision": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "unsafe_pickle": {"const": false},
+    "automatic_download": {"const": false},
+    "identity_decision_authority": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"role": {"const": "detector"}}},
+      "then": {"properties": {"embedding_dimension": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"role": {"const": "embedding"}}},
+      "then": {
+        "properties": {
+          "embedding_dimension": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4096
+          }
+        }
+      }
+    }
+  ]
+}

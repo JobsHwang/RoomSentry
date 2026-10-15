@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/household-episode-annotation-v2.schema.json",
+  "title": "Baby Monitor HouseholdEpisodeAnnotation v2 — elapsed source PTS",
+  "$comment": "This schema validates JSON structure, bounded values and review-state rules only. Core validation must also check finite numbers, strictly positive range durations, sorted non-overlapping ranges within source duration, sorted scenario tags, canonical annotation SHA256 and media-admission binding. The elapsed source PTS timebase does not by itself verify an origin or source completeness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "annotation_id",
+    "media_admission_sha256",
+    "camera_id",
+    "timebase",
+    "source_duration_seconds",
+    "scenario_tags",
+    "ranges",
+    "review_state",
+    "reviewers",
+    "human_verified",
+    "model_generated_labels",
+    "source_media_included",
+    "paths_disclosed",
+    "subject_identity_inference",
+    "annotation_sha256"
+  ],
+  "properties": {
+    "version": {"type": "integer", "const": 2},
+    "annotation_id": {"$ref": "#/$defs/id"},
+    "media_admission_sha256": {"$ref": "#/$defs/sha256"},
+    "camera_id": {"$ref": "#/$defs/id"},
+    "timebase": {"const": "elapsed_source_pts"},
+    "source_duration_seconds": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 86400
+    },
+    "scenario_tags": {
+      "type": "array",
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {"enum": [
+        "crib_overhead_view",
+        "daytime",
+        "eye_level_view",
+        "large_subject_scale",
+        "night_vision",
+        "partial_occlusion",
+        "small_subject_scale"
+      ]}
+    },
+    "ranges": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {"$ref": "#/$defs/range"}
+    },
+    "review_state": {"enum": ["pending", "approved"]},
+    "reviewers": {
+      "type": "array",
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/reviewer"}
+    },
+    "human_verified": {"type": "boolean"},
+    "model_generated_labels": {"type": "boolean", "const": false},
+    "source_media_included": {"type": "boolean", "const": false},
+    "paths_disclosed": {"type": "boolean", "const": false},
+    "subject_identity_inference": {"type": "boolean", "const": false},
+    "annotation_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"review_state": {"const": "approved"}}},
+      "then": {
+        "properties": {
+          "reviewers": {"minItems": 1},
+          "human_verified": {"const": true}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"review_state": {"const": "pending"}}},
+      "then": {
+        "properties": {
+          "reviewers": {"maxItems": 0},
+          "human_verified": {"const": false}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$(?![\\s\\S])"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"
+    },
+    "reviewer": {
+      "type": "string",
+      "pattern": "^reviewer_[A-Za-z0-9_.-]{1,64}$(?![\\s\\S])"
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_seconds", "end_seconds", "kind"],
+      "properties": {
+        "start_seconds": {"type": "number", "minimum": 0, "maximum": 86400},
+        "end_seconds": {"type": "number", "minimum": 0, "maximum": 86400},
+        "kind": {"enum": ["danger_event", "empty_room", "person_present"]}
+      }
+    }
+  }
+}

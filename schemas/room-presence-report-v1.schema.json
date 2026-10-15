@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baby-monitor.local/schemas/room-presence-report-v1.schema.json",
+  "title": "Conservative room person-presence report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "registry_fingerprint",
+    "policy",
+    "checked_at",
+    "rooms",
+    "media_read",
+    "paths_disclosed",
+    "identity_inference",
+    "risk_assessment",
+    "notification_authority"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "registry_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy": {"$ref": "#/$defs/policy"},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "rooms": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/assessment"}
+    },
+    "media_read": {"const": false},
+    "paths_disclosed": {"const": false},
+    "identity_inference": {"const": false},
+    "risk_assessment": {"const": false},
+    "notification_authority": {"const": false}
+  },
+  "$defs": {
+    "safeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "present_confirmations",
+        "clear_confirmations",
+        "confirmation_window_seconds",
+        "present_ttl_seconds",
+        "freshness_seconds",
+        "max_samples_per_stream"
+      ],
+      "properties": {
+        "version": {"const": 1},
+        "present_confirmations": {"type": "integer", "minimum": 1, "maximum": 10},
+        "clear_confirmations": {"type": "integer", "minimum": 1, "maximum": 20},
+        "confirmation_window_seconds": {"type": "number", "minimum": 1, "maximum": 600},
+        "present_ttl_seconds": {"type": "number", "minimum": 1, "maximum": 1800},
+        "freshness_seconds": {"type": "number", "minimum": 1, "maximum": 600},
+        "max_samples_per_stream": {"type": "integer", "minimum": 1, "maximum": 256}
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "room_id",
+        "display_name",
+        "status",
+        "configured_stream_count",
+        "fresh_stream_count",
+        "confirmed_person_stream_count",
+        "coverage_gap_stream_count",
+        "last_confirmed_person_at",
+        "reason_codes"
+      ],
+      "properties": {
+        "version": {"const": 1},
+        "room_id": {"$ref": "#/$defs/safeId"},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 60},
+        "status": {
+          "enum": ["person_present", "temporarily_clear", "unknown", "coverage_gap"]
+        },
+        "configured_stream_count": {"type": "integer", "minimum": 1, "maximum": 32},
+        "fresh_stream_count": {"type": "integer", "minimum": 0, "maximum": 32},
+        "confirmed_person_stream_count": {"type": "integer", "minimum": 0, "maximum": 32},
+        "coverage_gap_stream_count": {"type": "integer", "minimum": 0, "maximum": 32},
+        "last_confirmed_person_at": {
+          "oneOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "all_streams_clear",
+              "confirmation_pending",
+              "no_samples",
+              "person_confirmed",
+              "stream_coverage_gap",
+              "stream_stale"
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"status": {"const": "person_present"}},
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "confirmed_person_stream_count": {"type": "integer", "minimum": 1},
+              "last_confirmed_person_at": {"type": "string", "format": "date-time"}
+            }
+          },
+          "else": {
+            "properties": {
+              "confirmed_person_stream_count": {"const": 0},
+              "last_confirmed_person_at": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"status": {"const": "coverage_gap"}},
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "coverage_gap_stream_count": {"type": "integer", "minimum": 1}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$comment": "The canonical parser additionally enforces cross-field count bounds, sorted reason codes, false authority flags, policy relationships, and unique room IDs. temporarily_clear is a bounded detector fact, never proof that a room is empty or safe."
+}

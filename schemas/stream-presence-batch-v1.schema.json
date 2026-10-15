@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baby-monitor.local/schemas/stream-presence-batch-v1.schema.json",
+  "title": "Identity-free per-stream person detection and coverage facts v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "samples",
+    "media_read",
+    "identity_inference",
+    "risk_assessment",
+    "notification_authority"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "samples": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {"$ref": "#/$defs/sample"}
+    },
+    "media_read": {"const": false},
+    "identity_inference": {"const": false},
+    "risk_assessment": {"const": false},
+    "notification_authority": {"const": false}
+  },
+  "$defs": {
+    "safeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "sample_id",
+        "camera_id",
+        "observed_at",
+        "state",
+        "scanner_id",
+        "detector_id",
+        "source_fingerprint",
+        "reason_code"
+      ],
+      "properties": {
+        "version": {"const": 1},
+        "sample_id": {"$ref": "#/$defs/safeId"},
+        "camera_id": {"$ref": "#/$defs/safeId"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "state": {
+          "enum": ["person_detected", "clear", "coverage_gap"]
+        },
+        "scanner_id": {"$ref": "#/$defs/safeId"},
+        "detector_id": {
+          "oneOf": [
+            {"$ref": "#/$defs/safeId"},
+            {"type": "null"}
+          ]
+        },
+        "source_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reason_code": {
+          "oneOf": [
+            {"$ref": "#/$defs/safeId"},
+            {"type": "null"}
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"state": {"const": "coverage_gap"}},
+            "required": ["state"]
+          },
+          "then": {
+            "properties": {
+              "detector_id": {"type": "null"},
+              "reason_code": {"$ref": "#/$defs/safeId"}
+            }
+          },
+          "else": {
+            "properties": {
+              "detector_id": {"$ref": "#/$defs/safeId"},
+              "reason_code": {"type": "null"}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$comment": "Canonical ordering, globally unique sample IDs, registered camera references, and future timestamps are enforced by the canonical parser/evaluator. A clear sample means only that one admitted scan contained no person detection; it does not prove an empty room."
+}

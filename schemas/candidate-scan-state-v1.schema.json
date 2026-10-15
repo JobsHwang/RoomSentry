@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor CandidateScanState v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "camera_id",
+    "source_ref",
+    "scanner_identity",
+    "updated_at",
+    "watermark_at",
+    "processed_segments",
+    "pending_detections"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "camera_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "source_ref": {"type": "string", "pattern": "^rtsps?://"},
+    "scanner_identity": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "watermark_at": {
+      "oneOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "processed_segments": {
+      "type": "array",
+      "maxItems": 10000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/segmentFingerprint"}
+    },
+    "pending_detections": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/timedDetection"}
+    }
+  },
+  "$defs": {
+    "segmentFingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filename", "started_at", "ended_at", "size_bytes"],
+      "properties": {
+        "filename": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,200}$"},
+        "started_at": {"type": "string", "format": "date-time"},
+        "ended_at": {"type": "string", "format": "date-time"},
+        "size_bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "timedDetection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "occurred_at",
+        "segment_filename",
+        "label",
+        "confidence",
+        "bbox_xyxy"
+      ],
+      "properties": {
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "segment_filename": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,200}$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[^\\u0000\\r\\n]+$"
+        },
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "bbox_xyxy": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "prefixItems": [
+            {"type": "number", "minimum": 0, "maximum": 1},
+            {"type": "number", "minimum": 0, "maximum": 1},
+            {"type": "number", "minimum": 0, "maximum": 1},
+            {"type": "number", "minimum": 0, "maximum": 1}
+          ],
+          "items": false
+        }
+      }
+    }
+  }
+}

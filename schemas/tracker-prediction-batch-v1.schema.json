@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Tracker Prediction Batch v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "camera_id",
+    "detector_adapter",
+    "detection_batch_sha256",
+    "tracker_adapter",
+    "tracker_revision",
+    "tracker_config_sha256",
+    "runtime_id",
+    "assignments",
+    "subject_identity_inference",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "camera_id": {"$ref": "#/$defs/id"},
+    "detector_adapter": {"$ref": "#/$defs/id"},
+    "detection_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "tracker_adapter": {"$ref": "#/$defs/id"},
+    "tracker_revision": {"$ref": "#/$defs/id"},
+    "tracker_config_sha256": {"$ref": "#/$defs/sha256"},
+    "runtime_id": {"$ref": "#/$defs/id"},
+    "assignments": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/assignment"}
+    },
+    "subject_identity_inference": {"const": false},
+    "paths_disclosed": {"const": false}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame_id", "detection_id", "tracking_id"],
+      "properties": {
+        "frame_id": {"$ref": "#/$defs/id"},
+        "detection_id": {"$ref": "#/$defs/id"},
+        "tracking_id": {"$ref": "#/$defs/id"}
+      }
+    }
+  }
+}

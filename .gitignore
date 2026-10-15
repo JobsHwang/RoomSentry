@@ -1,0 +1,75 @@
+# Secrets and local overrides
+.env
+.env.*
+!.env.example
+config/local.toml
+config/*.local.toml
+config/*.deployment.local.json
+config/*.model-code.local.json
+config/*.ha-signals.local.json
+config/*.local.json
+deploy/rendered/
+private/
+secrets/
+weights/
+*.log
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Runtime data and databases
+data/**
+!data/.gitkeep
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+
+# Media and model weights
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.pt
+*.pth
+*.safetensors
+*.gguf
+*.onnx
+*.ckpt
+*.npy
+*.npz
+*.wav
+*.flac
+*.aac
+*.mp3
+*.m4a
+*.ogg
+*.webm
+models/
+
+# Evaluation output
+artifacts/
+reports/
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini

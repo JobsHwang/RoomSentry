@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor CandidateHealthStatus v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "checked_at",
+    "status",
+    "operational",
+    "attention_required",
+    "cameras",
+    "media_read",
+    "paths_disclosed",
+    "identity_inference",
+    "risk_assessment",
+    "notification_authority"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["operational", "attention"]},
+    "operational": {"type": "boolean"},
+    "attention_required": {"type": "boolean"},
+    "cameras": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/assessment"}
+    },
+    "media_read": {"const": false},
+    "paths_disclosed": {"const": false},
+    "identity_inference": {"const": false},
+    "risk_assessment": {"const": false},
+    "notification_authority": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"operational": {"const": true}}},
+      "then": {
+        "properties": {
+          "status": {"const": "operational"},
+          "attention_required": {"const": false}
+        }
+      },
+      "else": {
+        "properties": {
+          "status": {"const": "attention"},
+          "attention_required": {"const": true}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "checked_at",
+        "freshness",
+        "age_seconds",
+        "operational",
+        "attention_required",
+        "reason_codes",
+        "health",
+        "paths_disclosed"
+      ],
+      "properties": {
+        "version": {"const": 1},
+        "checked_at": {"type": "string", "format": "date-time"},
+        "freshness": {"enum": ["fresh", "stale", "clock_skew"]},
+        "age_seconds": {"type": "number", "minimum": 0},
+        "operational": {"type": "boolean"},
+        "attention_required": {"type": "boolean"},
+        "reason_codes": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9_]{1,80}$"}
+        },
+        "health": {
+          "oneOf": [
+            {"$ref": "candidate-worker-health-v1.schema.json"},
+            {"$ref": "candidate-worker-health-v2.schema.json"},
+            {"$ref": "candidate-worker-health-v3.schema.json"},
+            {"$ref": "candidate-worker-health-v4.schema.json"}
+          ]
+        },
+        "paths_disclosed": {"const": false}
+      }
+    }
+  },
+  "$comment": "Camera ID uniqueness and aggregate operational semantics remain enforced by the canonical Python command."
+}

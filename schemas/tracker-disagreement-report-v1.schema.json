@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Tracker Disagreement Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "detection_batch_sha256",
+    "comparison_sha256",
+    "review_sha256",
+    "left_prediction_sha256",
+    "right_prediction_sha256",
+    "left_tracker_adapter",
+    "right_tracker_adapter",
+    "evidence_status",
+    "disagreement_link_count",
+    "reviewed_link_count",
+    "unreviewable_link_count",
+    "same_subject_link_count",
+    "different_subject_link_count",
+    "left_exclusive_link_count",
+    "right_exclusive_link_count",
+    "left_disagreement_error_count",
+    "right_disagreement_error_count",
+    "left_disagreement_error_rate",
+    "right_disagreement_error_rate",
+    "relative_preference",
+    "reviewer_count",
+    "scope",
+    "human_ground_truth",
+    "overall_accuracy_evaluated",
+    "shared_links_evaluated",
+    "global_adapter_selected",
+    "subject_identity_inference",
+    "source_media_included",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "detection_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "comparison_sha256": {"$ref": "#/$defs/sha256"},
+    "review_sha256": {"$ref": "#/$defs/sha256"},
+    "left_prediction_sha256": {"$ref": "#/$defs/sha256"},
+    "right_prediction_sha256": {"$ref": "#/$defs/sha256"},
+    "left_tracker_adapter": {"$ref": "#/$defs/id"},
+    "right_tracker_adapter": {"$ref": "#/$defs/id"},
+    "evidence_status": {
+      "enum": [
+        "relative_difference_available",
+        "tie",
+        "no_reviewable_links"
+      ]
+    },
+    "disagreement_link_count": {"$ref": "#/$defs/count"},
+    "reviewed_link_count": {"$ref": "#/$defs/count"},
+    "unreviewable_link_count": {"$ref": "#/$defs/count"},
+    "same_subject_link_count": {"$ref": "#/$defs/count"},
+    "different_subject_link_count": {"$ref": "#/$defs/count"},
+    "left_exclusive_link_count": {"$ref": "#/$defs/count"},
+    "right_exclusive_link_count": {"$ref": "#/$defs/count"},
+    "left_disagreement_error_count": {"$ref": "#/$defs/count"},
+    "right_disagreement_error_count": {"$ref": "#/$defs/count"},
+    "left_disagreement_error_rate": {"$ref": "#/$defs/optionalRatio"},
+    "right_disagreement_error_rate": {"$ref": "#/$defs/optionalRatio"},
+    "relative_preference": {
+      "enum": ["left", "right", "tie", "insufficient_evidence"]
+    },
+    "reviewer_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "scope": {"const": "pairwise_disagreement_links"},
+    "human_ground_truth": {"const": true},
+    "overall_accuracy_evaluated": {"const": false},
+    "shared_links_evaluated": {"const": false},
+    "global_adapter_selected": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 20000
+    },
+    "optionalRatio": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "number", "minimum": 0, "maximum": 1}
+      ]
+    }
+  }
+}

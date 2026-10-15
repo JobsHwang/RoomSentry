@@ -1,0 +1,48 @@
+[Unit]
+Description=Stop the manual four-camera YOLO soak
+After=xiaomi-stream-gateway.service baby-monitor-home_shadow-init.service
+After=baby-monitor-home_shadow-camera_01-buffer.service baby-monitor-candidate-soak@camera_01.service
+After=baby-monitor-home_shadow-camera_02-buffer.service baby-monitor-candidate-soak@camera_02.service
+After=baby-monitor-home_shadow-camera_03-buffer.service baby-monitor-candidate-soak@camera_03.service
+After=baby-monitor-home_shadow-camera_04-buffer.service baby-monitor-candidate-soak@camera_04.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/projects/baby-monitor
+ExecStart=/usr/bin/systemctl --user stop \
+  baby-monitor-candidate-soak.target \
+  baby-monitor-candidate-soak-stop.timer \
+  baby-monitor-candidate-soak@camera_01.service \
+  baby-monitor-candidate-soak@camera_02.service \
+  baby-monitor-candidate-soak@camera_03.service \
+  baby-monitor-candidate-soak@camera_04.service \
+  baby-monitor-home_shadow-camera_01-buffer.service \
+  baby-monitor-home_shadow-camera_02-buffer.service \
+  baby-monitor-home_shadow-camera_03-buffer.service \
+  baby-monitor-home_shadow-camera_04-buffer.service \
+  xiaomi-stream-gateway.service \
+  baby-monitor-home_shadow-init.service
+ExecStart=-%h/projects/baby-monitor/.venv/bin/python -m baby_monitor candidate-soak-finish \
+  --ledger %h/projects/baby-monitor/data/shadow/state/candidate-soak-ledger.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_01/candidate-soak-health.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_02/candidate-soak-health.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_03/candidate-soak-health.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_04/candidate-soak-health.json
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/state
+MemoryMax=64M
+TasksMax=32
+TimeoutStartSec=30s

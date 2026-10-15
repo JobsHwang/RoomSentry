@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/household-trigger-coverage-report-v1.schema.json",
+  "title": "Baby Monitor HouseholdTriggerCoverageReport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "annotation_sha256",
+    "media_admission_sha256",
+    "detector_scan_sha256",
+    "camera_id",
+    "detector_adapter",
+    "model_id",
+    "model_revision",
+    "model_sha256",
+    "label",
+    "source_confidence_threshold",
+    "requested_sample_fps",
+    "source_fps",
+    "effective_sample_fps",
+    "source_frame_count",
+    "source_duration_seconds",
+    "scenario_tags",
+    "evaluated_sample_count",
+    "positive_sample_count",
+    "negative_sample_count",
+    "unannotated_sample_count",
+    "person_episode_count",
+    "danger_episode_count",
+    "candidate_gap_seconds",
+    "max_event_span_seconds",
+    "points",
+    "ground_truth_provenance",
+    "grouping_rule",
+    "derived_without_model_rerun",
+    "candidate_trigger_coverage_evaluated",
+    "box_localization_accuracy_evaluated",
+    "danger_recognition_accuracy_evaluated",
+    "risk_accuracy_evaluated",
+    "deployment_approved",
+    "dataset_specific_only",
+    "subject_identity_inference",
+    "source_media_included",
+    "paths_disclosed",
+    "report_sha256"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "annotation_sha256": {"$ref": "#/$defs/sha256"},
+    "media_admission_sha256": {"$ref": "#/$defs/sha256"},
+    "detector_scan_sha256": {"$ref": "#/$defs/sha256"},
+    "camera_id": {"$ref": "#/$defs/id"},
+    "detector_adapter": {"$ref": "#/$defs/id"},
+    "model_id": {"$ref": "#/$defs/id"},
+    "model_revision": {"$ref": "#/$defs/id"},
+    "model_sha256": {"$ref": "#/$defs/sha256"},
+    "label": {"const": "person"},
+    "source_confidence_threshold": {"$ref": "#/$defs/ratio"},
+    "requested_sample_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 10
+    },
+    "source_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 240
+    },
+    "effective_sample_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 240
+    },
+    "source_frame_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "source_duration_seconds": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 86400
+    },
+    "scenario_tags": {
+      "type": "array",
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {"enum": [
+        "crib_overhead_view",
+        "daytime",
+        "eye_level_view",
+        "large_subject_scale",
+        "night_vision",
+        "partial_occlusion",
+        "small_subject_scale"
+      ]}
+    },
+    "evaluated_sample_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "positive_sample_count": {"$ref": "#/$defs/count"},
+    "negative_sample_count": {"$ref": "#/$defs/count"},
+    "unannotated_sample_count": {"$ref": "#/$defs/count"},
+    "person_episode_count": {"$ref": "#/$defs/count"},
+    "danger_episode_count": {"$ref": "#/$defs/count"},
+    "candidate_gap_seconds": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 300
+    },
+    "max_event_span_seconds": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 300
+    },
+    "points": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/point"}
+    },
+    "ground_truth_provenance": {"const": "household_human_time_range"},
+    "grouping_rule": {"const": "same_as_candidate_worker_gap_and_max_span"},
+    "derived_without_model_rerun": {"const": true},
+    "candidate_trigger_coverage_evaluated": {"const": true},
+    "box_localization_accuracy_evaluated": {"const": false},
+    "danger_recognition_accuracy_evaluated": {"const": false},
+    "risk_accuracy_evaluated": {"const": false},
+    "deployment_approved": {"const": false},
+    "dataset_specific_only": {"const": true},
+    "subject_identity_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false},
+    "report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "optionalRatio": {
+      "anyOf": [
+        {"$ref": "#/$defs/ratio"},
+        {"type": "null"}
+      ]
+    },
+    "optionalSeconds": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        },
+        {"type": "null"}
+      ]
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_start_confidence",
+        "candidate_group_count",
+        "emitted_group_count",
+        "suppressed_group_count",
+        "emitted_groups_with_positive_sample",
+        "emitted_groups_without_positive_sample",
+        "covered_positive_sample_count",
+        "uncovered_positive_sample_count",
+        "positive_sample_recall",
+        "activated_negative_sample_count",
+        "negative_sample_false_activation_rate",
+        "activated_unannotated_sample_count",
+        "covered_person_episode_count",
+        "missed_person_episode_count",
+        "person_episode_recall",
+        "covered_danger_episode_count",
+        "missed_danger_episode_count",
+        "danger_episode_recall",
+        "maximum_detection_delay_seconds",
+        "longest_uncovered_positive_samples",
+        "longest_uncovered_positive_seconds"
+      ],
+      "properties": {
+        "candidate_start_confidence": {"$ref": "#/$defs/ratio"},
+        "candidate_group_count": {"$ref": "#/$defs/count"},
+        "emitted_group_count": {"$ref": "#/$defs/count"},
+        "suppressed_group_count": {"$ref": "#/$defs/count"},
+        "emitted_groups_with_positive_sample": {"$ref": "#/$defs/count"},
+        "emitted_groups_without_positive_sample": {"$ref": "#/$defs/count"},
+        "covered_positive_sample_count": {"$ref": "#/$defs/count"},
+        "uncovered_positive_sample_count": {"$ref": "#/$defs/count"},
+        "positive_sample_recall": {"$ref": "#/$defs/optionalRatio"},
+        "activated_negative_sample_count": {"$ref": "#/$defs/count"},
+        "negative_sample_false_activation_rate": {"$ref": "#/$defs/optionalRatio"},
+        "activated_unannotated_sample_count": {"$ref": "#/$defs/count"},
+        "covered_person_episode_count": {"$ref": "#/$defs/count"},
+        "missed_person_episode_count": {"$ref": "#/$defs/count"},
+        "person_episode_recall": {"$ref": "#/$defs/optionalRatio"},
+        "covered_danger_episode_count": {"$ref": "#/$defs/count"},
+        "missed_danger_episode_count": {"$ref": "#/$defs/count"},
+        "danger_episode_recall": {"$ref": "#/$defs/optionalRatio"},
+        "maximum_detection_delay_seconds": {"$ref": "#/$defs/optionalSeconds"},
+        "longest_uncovered_positive_samples": {"$ref": "#/$defs/count"},
+        "longest_uncovered_positive_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        }
+      }
+    }
+  }
+}

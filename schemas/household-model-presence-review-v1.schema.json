@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/household-model-presence-review-v1.schema.json",
+  "title": "Baby Monitor HouseholdModelPresenceReview v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "review_id",
+    "selection_manifest_sha256",
+    "review_model_id",
+    "review_model_revision",
+    "review_media_transfer",
+    "sampling_strategy",
+    "sources",
+    "items",
+    "version",
+    "review_scope",
+    "model_generated_labels",
+    "human_verified",
+    "ground_truth",
+    "approved_for_official_evaluation",
+    "selected_stills_only",
+    "clips_shared",
+    "audio_shared",
+    "identity_inference",
+    "biometric_processing",
+    "training_allowed",
+    "redistribution_allowed",
+    "source_media_included",
+    "paths_disclosed",
+    "review_sha256"
+  ],
+  "properties": {
+    "review_id": {"$ref": "#/$defs/id"},
+    "selection_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "review_model_id": {"$ref": "#/$defs/id"},
+    "review_model_revision": {"$ref": "#/$defs/id"},
+    "review_media_transfer": {
+      "enum": ["local_model_only", "selected_stills_remote"]
+    },
+    "sampling_strategy": {
+      "enum": [
+        "candidate_disagreement_and_control",
+        "candidate_targeted",
+        "uniform_grid"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4096,
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "version": {"const": 1},
+    "review_scope": {"const": "visible_person_presence_only"},
+    "model_generated_labels": {"const": true},
+    "human_verified": {"const": false},
+    "ground_truth": {"const": false},
+    "approved_for_official_evaluation": {"const": false},
+    "selected_stills_only": {"const": true},
+    "clips_shared": {"const": false},
+    "audio_shared": {"const": false},
+    "identity_inference": {"const": false},
+    "biometric_processing": {"const": false},
+    "training_allowed": {"const": false},
+    "redistribution_allowed": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false},
+    "review_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "camera_id",
+        "media_admission_sha256",
+        "source_duration_seconds"
+      ],
+      "properties": {
+        "camera_id": {"$ref": "#/$defs/id"},
+        "media_admission_sha256": {"$ref": "#/$defs/sha256"},
+        "source_duration_seconds": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 86400
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_item_id",
+        "camera_id",
+        "media_admission_sha256",
+        "timestamp_seconds",
+        "source_frame_sha256",
+        "visible_person",
+        "visibility",
+        "label_confidence"
+      ],
+      "properties": {
+        "review_item_id": {"$ref": "#/$defs/id"},
+        "camera_id": {"$ref": "#/$defs/id"},
+        "media_admission_sha256": {"$ref": "#/$defs/sha256"},
+        "timestamp_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        },
+        "source_frame_sha256": {"$ref": "#/$defs/sha256"},
+        "visible_person": {"enum": ["absent", "present", "unknown"]},
+        "visibility": {"enum": ["clear", "partial", "unknown"]},
+        "label_confidence": {"$ref": "#/$defs/ratio"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"visible_person": {"const": "present"}}},
+          "then": {"properties": {"visibility": {"enum": ["clear", "partial"]}}}
+        },
+        {
+          "if": {"properties": {"visible_person": {"const": "absent"}}},
+          "then": {"properties": {"visibility": {"const": "clear"}}}
+        },
+        {
+          "if": {"properties": {"visible_person": {"const": "unknown"}}},
+          "then": {"properties": {"visibility": {"const": "unknown"}}}
+        }
+      ]
+    }
+  }
+}

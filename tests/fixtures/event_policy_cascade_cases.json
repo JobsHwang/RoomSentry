@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "version": 1,
+      "event_id": "cascade_fixture_01",
+      "camera_id": "camera_01",
+      "occurred_at": "2026-08-29T02:00:00+00:00",
+      "event_type": "possible_risk",
+      "result_needs_remote_review": false,
+      "decision": {
+        "version": 1,
+        "risk_level": "high",
+        "review_tier": "local_primary",
+        "review_reasons": [],
+        "contradictions": [],
+        "remote_allowed": false,
+        "remote_used": false,
+        "final_source": "local_primary",
+        "signal_frequency_count": 0,
+        "signal_frequency_window_seconds": 0,
+        "frequent_signal_types": []
+      }
+    },
+    {
+      "version": 1,
+      "event_id": "cascade_fixture_02",
+      "camera_id": "camera_01",
+      "occurred_at": "2026-08-29T02:01:00+00:00",
+      "event_type": "possible_risk",
+      "result_needs_remote_review": false,
+      "decision": {
+        "version": 1,
+        "risk_level": "high",
+        "review_tier": "remote",
+        "review_reasons": ["elevated_risk"],
+        "contradictions": [],
+        "remote_allowed": false,
+        "remote_used": false,
+        "final_source": "local_primary",
+        "signal_frequency_count": 0,
+        "signal_frequency_window_seconds": 0,
+        "frequent_signal_types": []
+      }
+    }
+  ]
+}

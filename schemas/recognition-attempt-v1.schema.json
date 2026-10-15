@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/recognition-attempt-v1.schema.json",
+  "title": "RecognitionAttempt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "attempt_id",
+    "event_id",
+    "stage",
+    "provenance",
+    "started_at",
+    "completed_at",
+    "status",
+    "metrics",
+    "error_code"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "attempt_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "event_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,255}$"
+    },
+    "stage": {
+      "enum": ["local_primary", "local_secondary", "remote"]
+    },
+    "provenance": {
+      "$ref": "recognition-provenance-v1.schema.json"
+    },
+    "started_at": {"type": "string", "format": "date-time"},
+    "completed_at": {
+      "oneOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "status": {"enum": ["running", "succeeded", "failed"]},
+    "metrics": {
+      "oneOf": [
+        {"$ref": "recognition-run-metrics-v1.schema.json"},
+        {"type": "null"}
+      ]
+    },
+    "error_code": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$"},
+        {"type": "null"}
+      ]
+    }
+  }
+}

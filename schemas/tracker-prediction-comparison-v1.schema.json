@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Tracker Prediction Comparison v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "detection_batch_sha256",
+    "left_prediction_sha256",
+    "right_prediction_sha256",
+    "left_tracker_adapter",
+    "left_tracker_revision",
+    "left_tracker_config_sha256",
+    "left_runtime_id",
+    "right_tracker_adapter",
+    "right_tracker_revision",
+    "right_tracker_config_sha256",
+    "right_runtime_id",
+    "assignment_count",
+    "left_predicted_track_count",
+    "right_predicted_track_count",
+    "left_link_count",
+    "right_link_count",
+    "shared_link_count",
+    "left_only_link_count",
+    "right_only_link_count",
+    "continuous_disagreement_count",
+    "recovery_disagreement_count",
+    "disagreement_frame_count",
+    "disagreement_frame_ids",
+    "disagreement_frames_truncated",
+    "human_ground_truth_used",
+    "accuracy_evaluated",
+    "better_adapter_selected",
+    "subject_identity_inference",
+    "source_media_included",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "detection_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "left_prediction_sha256": {"$ref": "#/$defs/sha256"},
+    "right_prediction_sha256": {"$ref": "#/$defs/sha256"},
+    "left_tracker_adapter": {"$ref": "#/$defs/id"},
+    "left_tracker_revision": {"$ref": "#/$defs/id"},
+    "left_tracker_config_sha256": {"$ref": "#/$defs/sha256"},
+    "left_runtime_id": {"$ref": "#/$defs/id"},
+    "right_tracker_adapter": {"$ref": "#/$defs/id"},
+    "right_tracker_revision": {"$ref": "#/$defs/id"},
+    "right_tracker_config_sha256": {"$ref": "#/$defs/sha256"},
+    "right_runtime_id": {"$ref": "#/$defs/id"},
+    "assignment_count": {"$ref": "#/$defs/count"},
+    "left_predicted_track_count": {"$ref": "#/$defs/count"},
+    "right_predicted_track_count": {"$ref": "#/$defs/count"},
+    "left_link_count": {"$ref": "#/$defs/count"},
+    "right_link_count": {"$ref": "#/$defs/count"},
+    "shared_link_count": {"$ref": "#/$defs/count"},
+    "left_only_link_count": {"$ref": "#/$defs/count"},
+    "right_only_link_count": {"$ref": "#/$defs/count"},
+    "continuous_disagreement_count": {"$ref": "#/$defs/count"},
+    "recovery_disagreement_count": {"$ref": "#/$defs/count"},
+    "disagreement_frame_count": {"$ref": "#/$defs/count"},
+    "disagreement_frame_ids": {
+      "type": "array",
+      "maxItems": 200,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "disagreement_frames_truncated": {"type": "boolean"},
+    "human_ground_truth_used": {"const": false},
+    "accuracy_evaluated": {"const": false},
+    "better_adapter_selected": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 20000
+    }
+  }
+}

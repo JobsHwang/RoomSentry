@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Tracker Association Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "detection_batch_sha256",
+    "review_sha256",
+    "prediction_sha256",
+    "tracker_adapter",
+    "tracker_revision",
+    "tracker_config_sha256",
+    "runtime_id",
+    "evidence_status",
+    "frame_count",
+    "detection_count",
+    "eligible_assignment_count",
+    "duplicate_detection_count",
+    "false_positive_detection_count",
+    "unreviewable_detection_count",
+    "ground_truth_subject_count",
+    "subjects_with_links",
+    "predicted_track_count",
+    "fragmented_subject_count",
+    "fragment_excess_count",
+    "fragmentation_rate",
+    "eligible_link_count",
+    "id_switch_count",
+    "id_switch_rate",
+    "continuous_link_count",
+    "continuous_id_switch_count",
+    "recovery_link_count",
+    "recovery_id_switch_count",
+    "merged_predicted_track_count",
+    "reviewer_count",
+    "ground_truth_provenance",
+    "scope",
+    "human_ground_truth",
+    "detection_accuracy_evaluated",
+    "missed_detections_evaluated",
+    "subject_identity_inference",
+    "age_role_inference",
+    "source_media_included",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "detection_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "review_sha256": {"$ref": "#/$defs/sha256"},
+    "prediction_sha256": {"$ref": "#/$defs/sha256"},
+    "tracker_adapter": {"$ref": "#/$defs/id"},
+    "tracker_revision": {"$ref": "#/$defs/id"},
+    "tracker_config_sha256": {"$ref": "#/$defs/sha256"},
+    "runtime_id": {"$ref": "#/$defs/id"},
+    "evidence_status": {
+      "enum": [
+        "association_metrics_available",
+        "no_eligible_assignments",
+        "single_appearance_only"
+      ]
+    },
+    "frame_count": {"type": "integer", "minimum": 1, "maximum": 10000},
+    "detection_count": {"$ref": "#/$defs/count"},
+    "eligible_assignment_count": {"$ref": "#/$defs/count"},
+    "duplicate_detection_count": {"$ref": "#/$defs/count"},
+    "false_positive_detection_count": {"$ref": "#/$defs/count"},
+    "unreviewable_detection_count": {"$ref": "#/$defs/count"},
+    "ground_truth_subject_count": {"$ref": "#/$defs/count"},
+    "subjects_with_links": {"$ref": "#/$defs/count"},
+    "predicted_track_count": {"$ref": "#/$defs/count"},
+    "fragmented_subject_count": {"$ref": "#/$defs/count"},
+    "fragment_excess_count": {"$ref": "#/$defs/count"},
+    "fragmentation_rate": {"$ref": "#/$defs/optionalRate"},
+    "eligible_link_count": {"$ref": "#/$defs/count"},
+    "id_switch_count": {"$ref": "#/$defs/count"},
+    "id_switch_rate": {"$ref": "#/$defs/optionalRate"},
+    "continuous_link_count": {"$ref": "#/$defs/count"},
+    "continuous_id_switch_count": {"$ref": "#/$defs/count"},
+    "recovery_link_count": {"$ref": "#/$defs/count"},
+    "recovery_id_switch_count": {"$ref": "#/$defs/count"},
+    "merged_predicted_track_count": {"$ref": "#/$defs/count"},
+    "reviewer_count": {"type": "integer", "minimum": 0, "maximum": 5},
+    "ground_truth_provenance": {
+      "enum": ["admitted_publisher_human", "local_human_review"]
+    },
+    "scope": {"const": "association_on_detector_boxes"},
+    "human_ground_truth": {"const": true},
+    "detection_accuracy_evaluated": {"const": false},
+    "missed_detections_evaluated": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "age_role_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000
+    },
+    "optionalRate": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "number", "minimum": 0, "maximum": 1}
+      ]
+    }
+  }
+}

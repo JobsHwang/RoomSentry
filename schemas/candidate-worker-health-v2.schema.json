@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor CandidateWorkerHealth v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "camera_id",
+    "scanner_identity",
+    "detector_identity",
+    "checked_at",
+    "state",
+    "worker_running",
+    "scans_started",
+    "scans_succeeded",
+    "scans_failed",
+    "segments_scanned",
+    "detections",
+    "emitted_events",
+    "queue_full_events",
+    "last_scan_started_at",
+    "last_scan_completed_at",
+    "last_scan_duration_seconds",
+    "last_execution_lock_wait_seconds",
+    "last_error_code",
+    "paths_disclosed",
+    "identity_inference",
+    "risk_assessment",
+    "notification_authority",
+    "lifetime"
+  ],
+  "properties": {
+    "version": {"const": 2},
+    "camera_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "scanner_identity": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "detector_identity": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "state": {"enum": ["starting", "scanning", "idle", "failed", "stopped"]},
+    "worker_running": {"type": "boolean"},
+    "scans_started": {"$ref": "#/$defs/counter"},
+    "scans_succeeded": {"$ref": "#/$defs/counter"},
+    "scans_failed": {"$ref": "#/$defs/counter"},
+    "segments_scanned": {"$ref": "#/$defs/counter"},
+    "detections": {"$ref": "#/$defs/counter"},
+    "emitted_events": {"$ref": "#/$defs/counter"},
+    "queue_full_events": {"$ref": "#/$defs/counter"},
+    "last_scan_started_at": {"$ref": "#/$defs/nullableDateTime"},
+    "last_scan_completed_at": {"$ref": "#/$defs/nullableDateTime"},
+    "last_scan_duration_seconds": {"$ref": "#/$defs/nullableScanDuration"},
+    "last_execution_lock_wait_seconds": {"$ref": "#/$defs/nullableWaitDuration"},
+    "last_error_code": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[a-z0-9_]{1,80}$"},
+        {"type": "null"}
+      ]
+    },
+    "paths_disclosed": {"const": false},
+    "identity_inference": {"const": false},
+    "risk_assessment": {"const": false},
+    "notification_authority": {"const": false},
+    "lifetime": {"$ref": "#/$defs/lifetime"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"enum": ["starting", "scanning", "idle"]}}},
+      "then": {"properties": {"worker_running": {"const": true}}},
+      "else": {"properties": {"worker_running": {"const": false}}}
+    },
+    {
+      "if": {"properties": {"state": {"const": "failed"}}},
+      "then": {"properties": {"last_error_code": {"type": "string"}}},
+      "else": {"properties": {"last_error_code": {"type": "null"}}}
+    }
+  ],
+  "$defs": {
+    "counter": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+    "nullableDateTime": {
+      "oneOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "nullableScanDuration": {
+      "oneOf": [
+        {"type": "number", "minimum": 0, "maximum": 604800},
+        {"type": "null"}
+      ]
+    },
+    "nullableWaitDuration": {
+      "oneOf": [
+        {"type": "number", "minimum": 0, "maximum": 3600},
+        {"type": "null"}
+      ]
+    },
+    "durationHistogram": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/counter"}
+    },
+    "waitHistogram": {
+      "type": "array",
+      "minItems": 19,
+      "maxItems": 19,
+      "items": {"$ref": "#/$defs/counter"}
+    },
+    "lifetime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "updated_at",
+        "sessions_started",
+        "sessions_stopped",
+        "sessions_failed",
+        "unclean_restarts",
+        "scans_succeeded",
+        "scans_failed",
+        "scan_duration_sample_count",
+        "scan_duration_max_seconds",
+        "scan_duration_histogram",
+        "execution_lock_wait_sample_count",
+        "execution_lock_wait_max_seconds",
+        "execution_lock_wait_histogram"
+      ],
+      "properties": {
+        "updated_at": {"type": "string", "format": "date-time"},
+        "sessions_started": {"$ref": "#/$defs/counter"},
+        "sessions_stopped": {"$ref": "#/$defs/counter"},
+        "sessions_failed": {"$ref": "#/$defs/counter"},
+        "unclean_restarts": {"$ref": "#/$defs/counter"},
+        "scans_succeeded": {"$ref": "#/$defs/counter"},
+        "scans_failed": {"$ref": "#/$defs/counter"},
+        "scan_duration_sample_count": {"$ref": "#/$defs/counter"},
+        "scan_duration_max_seconds": {"$ref": "#/$defs/nullableScanDuration"},
+        "scan_duration_histogram": {"$ref": "#/$defs/durationHistogram"},
+        "execution_lock_wait_sample_count": {"$ref": "#/$defs/counter"},
+        "execution_lock_wait_max_seconds": {"$ref": "#/$defs/nullableWaitDuration"},
+        "execution_lock_wait_histogram": {"$ref": "#/$defs/waitHistogram"}
+      }
+    }
+  },
+  "$comment": "Histogram sums, percentile bounds, counter relationships and timestamp ordering remain enforced by the canonical Python parser. Histograms are fixed-size and therefore do not grow with runtime."
+}

@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "source_adapter": "home_assistant",
+  "mappings": [
+    {
+      "entity_id": "binary_sensor.camera_01_motion",
+      "camera_id": "cam_01",
+      "signal_type": "motion",
+      "confidence": 0.9,
+      "trigger": "rising_edge",
+      "active_states": ["on"],
+      "required_event_type": null,
+      "attributes": {
+        "channel": "main"
+      }
+    },
+    {
+      "entity_id": "event.camera_01_cry",
+      "camera_id": "cam_01",
+      "signal_type": "hardware_cry",
+      "confidence": 0.9,
+      "trigger": "state_change",
+      "active_states": [],
+      "required_event_type": "cry",
+      "attributes": {
+        "channel": "main",
+        "severity_hint": "medium"
+      }
+    }
+  ]
+}

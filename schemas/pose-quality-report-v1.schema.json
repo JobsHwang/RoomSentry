@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor PoseQualityReport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "camera_id",
+    "pose_adapter",
+    "model_id",
+    "model_revision",
+    "model_sha256",
+    "pose_batch_sha256",
+    "config",
+    "frames",
+    "transitions",
+    "summary",
+    "anonymous_pairing_only",
+    "subject_identity_inference",
+    "posture_classification",
+    "risk_inference",
+    "source_media_included",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "camera_id": {"$ref": "#/$defs/safe_id"},
+    "pose_adapter": {"$ref": "#/$defs/safe_id"},
+    "model_id": {"$ref": "#/$defs/safe_id"},
+    "model_revision": {"$ref": "#/$defs/safe_id"},
+    "model_sha256": {"$ref": "#/$defs/sha256"},
+    "pose_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "config": {"$ref": "#/$defs/config"},
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/frame"}
+    },
+    "transitions": {
+      "type": "array",
+      "maxItems": 9999,
+      "items": {"$ref": "#/$defs/transition"}
+    },
+    "summary": {"$ref": "#/$defs/summary"},
+    "anonymous_pairing_only": {"const": true},
+    "subject_identity_inference": {"const": false},
+    "posture_classification": {"const": false},
+    "risk_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false}
+  },
+  "$defs": {
+    "safe_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "optional_rate": {
+      "oneOf": [
+        {"type": "number", "minimum": 0, "maximum": 1},
+        {"type": "null"}
+      ]
+    },
+    "optional_displacement": {
+      "oneOf": [
+        {"type": "number", "minimum": 0, "maximum": 1000000},
+        {"type": "null"}
+      ]
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "keypoint_confidence_threshold",
+        "min_usable_keypoints",
+        "min_pair_bbox_iou",
+        "min_shared_keypoints",
+        "image_change_threshold",
+        "shape_change_threshold"
+      ],
+      "properties": {
+        "version": {"const": 1},
+        "keypoint_confidence_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "min_usable_keypoints": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 17
+        },
+        "min_pair_bbox_iou": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "min_shared_keypoints": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 17
+        },
+        "image_change_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "shape_change_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_id",
+        "timestamp_seconds",
+        "pose_count",
+        "usable_pose_count",
+        "in_frame_keypoint_count",
+        "high_confidence_keypoint_count"
+      ],
+      "properties": {
+        "frame_id": {"$ref": "#/$defs/safe_id"},
+        "timestamp_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 31536000
+        },
+        "pose_count": {"type": "integer", "minimum": 0, "maximum": 100},
+        "usable_pose_count": {"type": "integer", "minimum": 0, "maximum": 100},
+        "in_frame_keypoint_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1700
+        },
+        "high_confidence_keypoint_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1700
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from_frame_id",
+        "to_frame_id",
+        "delta_seconds",
+        "from_pose_count",
+        "to_pose_count",
+        "matched_pose_pairs",
+        "comparable_pose_pairs",
+        "insufficient_shared_keypoint_pairs",
+        "unmatched_from_poses",
+        "unmatched_to_poses",
+        "image_change_pairs",
+        "shape_change_pairs",
+        "image_displacement_median",
+        "image_displacement_p95",
+        "shape_displacement_median",
+        "shape_displacement_p95"
+      ],
+      "properties": {
+        "from_frame_id": {"$ref": "#/$defs/safe_id"},
+        "to_frame_id": {"$ref": "#/$defs/safe_id"},
+        "delta_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 31536000
+        },
+        "from_pose_count": {"type": "integer", "minimum": 0, "maximum": 100},
+        "to_pose_count": {"type": "integer", "minimum": 0, "maximum": 100},
+        "matched_pose_pairs": {"type": "integer", "minimum": 0, "maximum": 100},
+        "comparable_pose_pairs": {"type": "integer", "minimum": 0, "maximum": 100},
+        "insufficient_shared_keypoint_pairs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "unmatched_from_poses": {"type": "integer", "minimum": 0, "maximum": 100},
+        "unmatched_to_poses": {"type": "integer", "minimum": 0, "maximum": 100},
+        "image_change_pairs": {"type": "integer", "minimum": 0, "maximum": 100},
+        "shape_change_pairs": {"type": "integer", "minimum": 0, "maximum": 100},
+        "image_displacement_median": {"$ref": "#/$defs/optional_displacement"},
+        "image_displacement_p95": {"$ref": "#/$defs/optional_displacement"},
+        "shape_displacement_median": {"$ref": "#/$defs/optional_displacement"},
+        "shape_displacement_p95": {"$ref": "#/$defs/optional_displacement"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_status",
+        "frame_count",
+        "pose_count",
+        "usable_pose_count",
+        "frames_with_poses",
+        "frames_with_usable_poses",
+        "usable_pose_rate",
+        "transition_count",
+        "matched_pose_pairs",
+        "comparable_pose_pairs",
+        "insufficient_shared_keypoint_pairs",
+        "temporal_comparability_rate",
+        "image_change_pairs",
+        "shape_change_pairs",
+        "image_displacement_median",
+        "image_displacement_p95",
+        "shape_displacement_median",
+        "shape_displacement_p95"
+      ],
+      "properties": {
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "no_pose_evidence",
+            "single_frame_only",
+            "no_anonymous_pairs",
+            "insufficient_shared_keypoints",
+            "temporal_measurements_available"
+          ]
+        },
+        "frame_count": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "pose_count": {"type": "integer", "minimum": 0, "maximum": 5000},
+        "usable_pose_count": {"type": "integer", "minimum": 0, "maximum": 5000},
+        "frames_with_poses": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "frames_with_usable_poses": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "usable_pose_rate": {"$ref": "#/$defs/optional_rate"},
+        "transition_count": {"type": "integer", "minimum": 0, "maximum": 9999},
+        "matched_pose_pairs": {"type": "integer", "minimum": 0, "maximum": 5000},
+        "comparable_pose_pairs": {"type": "integer", "minimum": 0, "maximum": 5000},
+        "insufficient_shared_keypoint_pairs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        },
+        "temporal_comparability_rate": {"$ref": "#/$defs/optional_rate"},
+        "image_change_pairs": {"type": "integer", "minimum": 0, "maximum": 5000},
+        "shape_change_pairs": {"type": "integer", "minimum": 0, "maximum": 5000},
+        "image_displacement_median": {"$ref": "#/$defs/optional_displacement"},
+        "image_displacement_p95": {"$ref": "#/$defs/optional_displacement"},
+        "shape_displacement_median": {"$ref": "#/$defs/optional_displacement"},
+        "shape_displacement_p95": {"$ref": "#/$defs/optional_displacement"}
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "backend": "opencv_dnn",
+  "model_format": "ONNX",
+  "role": "embedding",
+  "model_id": "OpenCV.Zoo.SFace.2021dec",
+  "upstream_revision": "ba91a3b91d00d76e86540d4013f944bd6b514e39",
+  "filename": "face_recognition_sface_2021dec.onnx",
+  "sha256": "0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79",
+  "size_bytes": 38696353,
+  "source_url": "https://media.githubusercontent.com/media/opencv/opencv_zoo/ba91a3b91d00d76e86540d4013f944bd6b514e39/models/face_recognition_sface/face_recognition_sface_2021dec.onnx",
+  "license_spdx": "Apache-2.0",
+  "license_url": "https://github.com/opencv/opencv_zoo/blob/ba91a3b91d00d76e86540d4013f944bd6b514e39/models/face_recognition_sface/LICENSE",
+  "input_width": 112,
+  "input_height": 112,
+  "input_color_space": "BGR",
+  "landmark_count": 5,
+  "embedding_dimension": 128,
+  "preprocessing_revision": "opencv_facerecognizersf_aligncrop_bgr_v1",
+  "unsafe_pickle": false,
+  "automatic_download": false,
+  "identity_decision_authority": false
+}

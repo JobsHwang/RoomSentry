@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "source_id": "smolvlm2_2.2b_instruct_482adb",
+  "asset_kind": "model_weights",
+  "canonical_url": "https://huggingface.co/HuggingFaceTB/SmolVLM2-2.2B-Instruct",
+  "accessed_on": "2026-08-11",
+  "source_revision": "482adb537c021c86670beed01cd58990d01e72e4",
+  "upstream_name": "HuggingFaceTB SmolVLM2 2.2B Instruct",
+  "license": {
+    "name": "Apache License 2.0",
+    "spdx_id": "Apache-2.0",
+    "terms_url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "commercial_use": "allowed",
+    "modification": "allowed",
+    "redistribution": "allowed"
+  },
+  "access": {
+    "gated": "no",
+    "authentication_required": "no",
+    "expected_bytes": 8992155310
+  },
+  "content": {
+    "observed_bytes": null,
+    "sha256": null
+  },
+  "privacy": {
+    "real_minors": "no",
+    "faces": "not_applicable",
+    "audio": "not_applicable",
+    "device_or_account_ids": "no",
+    "precise_timestamps": "no",
+    "private_household_data": "no"
+  },
+  "labels": {
+    "origin": "none",
+    "human_verified": false,
+    "ground_truth": false
+  },
+  "admission": {
+    "tier": "A",
+    "status": "approved_for_download",
+    "purpose": "model_evaluation",
+    "requires_user_approval": true,
+    "user_approval_recorded": true,
+    "git_allowed": false,
+    "ci_allowed": false,
+    "redistribution_allowed": false,
+    "training_allowed": false,
+    "reviewed_on": "2026-08-11",
+    "blocker_codes": [],
+    "restriction_codes": [
+      "local_evaluation_only",
+      "no_git_weights",
+      "no_household_media"
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+[Unit]
+Description=Baby Monitor bounded INT8 Mage-VL shadow batch
+After=baby-monitor-ha-signal-dispatch.service
+StartLimitIntervalSec=300
+StartLimitBurst=3
+ConditionPathExists=%h/projects/baby-monitor/config/home-shadow-mage-shadow-once.local.toml
+ConditionPathExists=%h/projects/baby-monitor/data/shadow/state/events.sqlite3
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/projects/baby-monitor
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor visual-predicate-shadow-worker \
+  --config %h/projects/baby-monitor/config/home-shadow-mage-shadow-once.local.toml \
+  --database %h/projects/baby-monitor/data/shadow/state/events.sqlite3 \
+  --max-active 64 \
+  --lease-seconds 180 \
+  --max-attempts 2 \
+  --retry-delay-seconds 30 \
+  --max-jobs 4 \
+  --idle-exit-seconds 5 \
+  --max-runtime-seconds 600 \
+  --poll-seconds 1
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONNOUSERSITE=1
+Environment=HF_HUB_OFFLINE=1
+Environment=TRANSFORMERS_OFFLINE=1
+Environment=TOKENIZERS_PARALLELISM=false
+UMask=0077
+Nice=12
+TimeoutStartSec=12min
+TimeoutStopSec=30
+KillMode=mixed
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=read-only
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/state
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectSystem=strict
+ProcSubset=pid
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=yes
+SystemCallArchitectures=native
+TasksMax=512
+MemoryMax=12G
+MemorySwapMax=2G
+CPUQuota=300%
+OOMPolicy=stop
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=baby-monitor-mage-shadow-once
+LogRateLimitIntervalSec=30s
+LogRateLimitBurst=100
+
+# Deliberately no [Install] section: this GPU batch is manual-start only.

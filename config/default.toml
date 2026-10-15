@@ -1,0 +1,166 @@
+[general]
+timezone = "Asia/Shanghai"
+
+[storage]
+local_root = "./data"
+nas_root = ""
+prefer_nas = false
+database = "./data/events.sqlite3"
+retention_days = 14
+retention_scan_enabled = false
+retention_delete_enabled = false
+
+[camera]
+id = "nursery_cam_01"
+kind = "file"
+source = ""
+
+[detector]
+backend = "mock"
+yolo_model_path = ""
+yolo_manifest_path = ""
+yolo_runner_command = []
+yolo_runner_timeout_seconds = 600.0
+# Optional shared POSIX lock for multiple manual candidate workers on one GPU.
+# Its existing parent directory must be private (0700); empty keeps it disabled.
+yolo_execution_lock_path = ""
+yolo_execution_lock_timeout_seconds = 600.0
+device = "0"
+confidence = 0.35
+sample_fps = 1.0
+image_size = 640
+rotation_degrees = 0
+candidate_gap_seconds = 3.0
+scene_threshold = 0.15
+scene_max_detections = 200
+labels = ["person", "cat", "dog"]
+
+[media]
+pre_event_seconds = 5.0
+post_event_seconds = 7.0
+keyframe_count = 5
+ffmpeg = "ffmpeg"
+ffprobe = "ffprobe"
+
+[buffer]
+root = "./data/buffer"
+segment_seconds = 2.0
+max_segments = 30
+reconnect_initial_seconds = 0.5
+reconnect_max_seconds = 8.0
+poll_interval_seconds = 0.25
+eviction_enabled = false
+
+[media_health]
+stale_after_seconds = 10.0
+future_tolerance_seconds = 5.0
+
+[candidate_worker]
+max_segments_per_run = 32
+idle_exit_seconds = 30.0
+max_runtime_seconds = 3600.0
+poll_seconds = 1.0
+max_event_span_seconds = 30.0
+candidate_start_confidence = 0.35
+max_pending_detections = 1000
+detector_timeout_seconds = 120.0
+
+[analysis_queue]
+max_pending = 32
+lease_seconds = 300
+retry_delay_seconds = 30
+max_attempts = 3
+
+[analysis_worker]
+max_jobs_per_run = 32
+idle_exit_seconds = 30.0
+max_runtime_seconds = 3600.0
+poll_seconds = 2.0
+gpu_guard_enabled = false
+gpu_device = "0"
+min_free_vram_mib = 6000
+max_gpu_utilization_percent = 20
+gpu_probe_timeout_seconds = 5
+
+[archive_queue]
+max_pending = 64
+lease_seconds = 3600
+retry_delay_seconds = 300
+max_attempts = 20
+
+[archive_worker]
+max_jobs_per_run = 32
+idle_exit_seconds = 30.0
+max_runtime_seconds = 3600.0
+poll_seconds = 5.0
+
+[local_vlm]
+backend = "mock"
+name = "mock"
+revision = ""
+command = []
+timeout_seconds = 180
+confidence_threshold = 0.65
+gpu_device = "0"
+
+[visual_predicate_shadow]
+enabled = false
+backend = "conservative"
+command = []
+predicates = ["face_visibility", "covering_near_face_visible"]
+hardware_signal_adapters = ["home_assistant"]
+min_person_confidence = 0.25
+model_id = "microsoft.Mage-VL"
+model_revision = "5c78cab61938e73859b63724d9bf5cb88c477eaa"
+prompt_version = "mage_atomic_visible_v1"
+max_jobs = 32
+idle_exit_seconds = 30.0
+max_runtime_seconds = 3600.0
+startup_timeout_seconds = 180.0
+request_timeout_seconds = 180.0
+health_path = ""
+
+[review_policy]
+signal_frequency_window_seconds = 600
+signal_frequency_secondary_threshold = 3
+priority_signal_types = ["fall_hint"]
+
+[secondary_vlm]
+enabled = false
+backend = "mock"
+name = "secondary_mock"
+revision = ""
+command = []
+timeout_seconds = 180
+gpu_device = "0"
+
+[remote_vlm]
+enabled = false
+upload_consent = false
+base_url = ""
+model = ""
+api_key_env = "BABY_MONITOR_REMOTE_API_KEY"
+max_frames = 3
+timeout_seconds = 60
+max_upload_bytes = 5242880
+max_response_bytes = 262144
+max_requests_per_day = 20
+min_interval_seconds = 60
+
+[identity]
+enabled = false
+biometric_enrollment_consent = false
+event_matching_enabled = false
+external_identity_disclosure_enabled = false
+
+[notification]
+enabled = false
+external_delivery_enabled = false
+auto_file_enabled = false
+auto_file_sink_id = "shadow_local"
+event_policy_path = ""
+max_pending = 64
+max_pending_age_seconds = 3600
+lease_seconds = 300
+retry_delay_seconds = 30
+max_attempts = 5

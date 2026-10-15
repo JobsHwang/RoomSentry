@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor MotionTrackerState v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "camera_id",
+    "detector_adapter",
+    "config_fingerprint",
+    "last_frame_at",
+    "active_tracks",
+    "processed_frames",
+    "pending_observations"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "camera_id": {"$ref": "#/$defs/safeId"},
+    "detector_adapter": {"$ref": "#/$defs/safeId"},
+    "config_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "last_frame_at": {
+      "oneOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "active_tracks": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {"$ref": "#/$defs/activeTrack"}
+    },
+    "processed_frames": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/processedFrame"}
+    },
+    "pending_observations": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/observation"}
+    }
+  },
+  "$defs": {
+    "safeId": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[^\\u0000\\r\\n]+$"
+    },
+    "bbox": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "number", "minimum": 0, "maximum": 1},
+        {"type": "number", "minimum": 0, "maximum": 1},
+        {"type": "number", "minimum": 0, "maximum": 1},
+        {"type": "number", "minimum": 0, "maximum": 1}
+      ],
+      "items": false,
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["occurred_at", "confidence", "bbox_xyxy"],
+      "properties": {
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "bbox_xyxy": {"$ref": "#/$defs/bbox"}
+      }
+    },
+    "activeTrack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tracking_id", "label", "current", "previous"],
+      "properties": {
+        "tracking_id": {"$ref": "#/$defs/safeId"},
+        "label": {"$ref": "#/$defs/label"},
+        "current": {"$ref": "#/$defs/sample"},
+        "previous": {
+          "oneOf": [
+            {"$ref": "#/$defs/sample"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "processedFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame_id", "occurred_at", "fingerprint"],
+      "properties": {
+        "frame_id": {"$ref": "#/$defs/safeId"},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "observation_id",
+        "camera_id",
+        "occurred_at",
+        "source_adapter",
+        "tracking_id",
+        "label",
+        "confidence",
+        "bbox_xyxy"
+      ],
+      "properties": {
+        "version": {"const": 1},
+        "observation_id": {"$ref": "#/$defs/safeId"},
+        "camera_id": {"$ref": "#/$defs/safeId"},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "source_adapter": {"const": "motion_two_stage_tracker_v1"},
+        "tracking_id": {"$ref": "#/$defs/safeId"},
+        "label": {"$ref": "#/$defs/label"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "bbox_xyxy": {"$ref": "#/$defs/bbox"}
+      }
+    }
+  }
+}

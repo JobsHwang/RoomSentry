@@ -1,0 +1,65 @@
+[Unit]
+Description=Capture the private baseline for a manual four-camera YOLO soak
+PartOf=baby-monitor-candidate-soak.target
+Requires=baby-monitor-home_shadow-init.service
+After=baby-monitor-home_shadow-init.service
+Before=xiaomi-stream-gateway.service
+Before=baby-monitor-home_shadow-camera_01-buffer.service baby-monitor-candidate-soak@camera_01.service
+Before=baby-monitor-home_shadow-camera_02-buffer.service baby-monitor-candidate-soak@camera_02.service
+Before=baby-monitor-home_shadow-camera_03-buffer.service baby-monitor-candidate-soak@camera_03.service
+Before=baby-monitor-home_shadow-camera_04-buffer.service baby-monitor-candidate-soak@camera_04.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=%h/projects/baby-monitor
+ExecStartPre=/usr/bin/install -d -m 0700 %h/projects/baby-monitor/data/shadow/buffer/camera_01
+ExecStartPre=/usr/bin/install -d -m 0700 %h/projects/baby-monitor/data/shadow/buffer/camera_02
+ExecStartPre=/usr/bin/install -d -m 0700 %h/projects/baby-monitor/data/shadow/buffer/camera_03
+ExecStartPre=/usr/bin/install -d -m 0700 %h/projects/baby-monitor/data/shadow/buffer/camera_04
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor candidate-presence-health-init \
+  --config %h/projects/baby-monitor/config/home-shadow.local.toml \
+  --camera-id camera_01 \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_01/candidate-soak-health.json \
+  --detector yolo_command
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor candidate-presence-health-init \
+  --config %h/projects/baby-monitor/config/home-shadow.local.toml \
+  --camera-id camera_02 \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_02/candidate-soak-health.json \
+  --detector yolo_command
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor candidate-presence-health-init \
+  --config %h/projects/baby-monitor/config/home-shadow.local.toml \
+  --camera-id camera_03 \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_03/candidate-soak-health.json \
+  --detector yolo_command
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor candidate-presence-health-init \
+  --config %h/projects/baby-monitor/config/home-shadow.local.toml \
+  --camera-id camera_04 \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_04/candidate-soak-health.json \
+  --detector yolo_command
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor candidate-soak-start \
+  --ledger %h/projects/baby-monitor/data/shadow/state/candidate-soak-ledger.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_01/candidate-soak-health.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_02/candidate-soak-health.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_03/candidate-soak-health.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/camera_04/candidate-soak-health.json \
+  --expected-duration-seconds 86400
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+ReadWritePaths=%h/projects/baby-monitor/data/shadow
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/state
+MemoryMax=128M
+TasksMax=64
+TimeoutStartSec=30s

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "source_id": "synthetic_fixture_v1",
+  "asset_kind": "dataset_archive",
+  "canonical_url": "https://example.com/baby-monitor/synthetic-fixture-v1",
+  "accessed_on": "2026-08-08",
+  "source_revision": "fixture_v1",
+  "upstream_name": "Baby Monitor synthetic test fixture",
+  "license": {
+    "name": "Apache License 2.0",
+    "spdx_id": "Apache-2.0",
+    "terms_url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "commercial_use": "allowed",
+    "modification": "allowed",
+    "redistribution": "allowed"
+  },
+  "access": {
+    "gated": "no",
+    "authentication_required": "no",
+    "expected_bytes": 16
+  },
+  "content": {
+    "observed_bytes": 16,
+    "sha256": "270c0d536da1e328c882cda409fc95a131d86851b817f538836313cad3b9ed03"
+  },
+  "privacy": {
+    "real_minors": "no",
+    "faces": "not_applicable",
+    "audio": "not_applicable",
+    "device_or_account_ids": "no",
+    "precise_timestamps": "no",
+    "private_household_data": "no"
+  },
+  "labels": {
+    "origin": "synthetic_program",
+    "human_verified": false,
+    "ground_truth": true
+  },
+  "admission": {
+    "tier": "A",
+    "status": "verified_local",
+    "purpose": "public_regression",
+    "requires_user_approval": false,
+    "user_approval_recorded": false,
+    "git_allowed": true,
+    "ci_allowed": true,
+    "redistribution_allowed": true,
+    "training_allowed": true,
+    "reviewed_on": "2026-08-08",
+    "blocker_codes": [],
+    "restriction_codes": []
+  }
+}

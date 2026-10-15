@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "source_id": "nasa_jsc2010e013041_adult_face_smoke",
+  "asset_kind": "media_asset",
+  "canonical_url": "https://images-assets.nasa.gov/image/jsc2010e013041/jsc2010e013041~orig.jpg",
+  "accessed_on": "2026-08-11",
+  "source_revision": "jsc2010e013041",
+  "upstream_name": "NASA jsc2010e013041 official adult astronaut portrait",
+  "license": {
+    "name": "NASA Images and Media Usage Guidelines",
+    "spdx_id": null,
+    "terms_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    "commercial_use": "restricted",
+    "modification": "restricted",
+    "redistribution": "restricted"
+  },
+  "access": {
+    "gated": "no",
+    "authentication_required": "no",
+    "expected_bytes": 1026180
+  },
+  "content": {
+    "observed_bytes": 1026180,
+    "sha256": "d3ee607cb63d4978536cda319bb6fa947d3c783b5e218e5f79d7639d5063aac2"
+  },
+  "privacy": {
+    "real_minors": "no",
+    "faces": "yes",
+    "audio": "no",
+    "device_or_account_ids": "no",
+    "precise_timestamps": "yes",
+    "private_household_data": "no"
+  },
+  "labels": {
+    "origin": "publisher_description",
+    "human_verified": false,
+    "ground_truth": false
+  },
+  "admission": {
+    "tier": "B",
+    "status": "verified_local",
+    "purpose": "model_evaluation",
+    "requires_user_approval": true,
+    "user_approval_recorded": true,
+    "git_allowed": false,
+    "ci_allowed": false,
+    "redistribution_allowed": false,
+    "training_allowed": false,
+    "reviewed_on": "2026-08-11",
+    "blocker_codes": [],
+    "restriction_codes": [
+      "adult_identifiable_face",
+      "local_only",
+      "nasa_attribution_required",
+      "no_training",
+      "precise_timestamp",
+      "publicity_rights_restricted"
+    ]
+  }
+}

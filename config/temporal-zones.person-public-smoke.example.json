@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "track_expiry_seconds": 30.0,
+  "max_processed_observations": 1000,
+  "zones": [
+    {
+      "zone_id": "public_sample_full_frame",
+      "labels": ["person"],
+      "bbox_xyxy": [0.0, 0.0, 1.0, 1.0],
+      "dwell_seconds": 0.5,
+      "exit_margin": 0.0,
+      "minimum_confidence": 0.65
+    }
+  ]
+}

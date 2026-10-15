@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor EventMedia v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "clip_path",
+    "frame_paths",
+    "coverage_gaps",
+    "selected_segments"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "clip_path": {
+      "type": "string",
+      "description": "Absolute local clip path when present; empty for frame-only evaluation."
+    },
+    "frame_paths": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "coverage_gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["started_at", "ended_at", "reason"],
+        "properties": {
+          "started_at": {"type": "string", "format": "date-time"},
+          "ended_at": {"type": "string", "format": "date-time"},
+          "reason": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]{1,64}$"
+          }
+        }
+      }
+    },
+    "selected_segments": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100000
+    }
+  }
+}

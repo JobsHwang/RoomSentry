@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/household-event-policy-v1.schema.json",
+  "title": "Baby Monitor HouseholdEventPolicy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "package_id",
+    "timezone",
+    "rules",
+    "enabled",
+    "risk_inference",
+    "notification_delivery_authority",
+    "subject_identity_inference",
+    "source_media_included",
+    "paths_disclosed",
+    "policy_sha256"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "package_id": {"$ref": "#/$defs/id"},
+    "timezone": {"type": "string", "minLength": 1, "maxLength": 64},
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/rule"}
+    },
+    "enabled": {"type": "boolean"},
+    "risk_inference": {"const": false},
+    "notification_delivery_authority": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false},
+    "policy_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,128}$"},
+    "sinkId": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,64}$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "clockTime": {"type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"},
+    "enumSet": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id",
+        "event_types",
+        "risk_levels",
+        "review_statuses",
+        "sink_ids",
+        "local_only",
+        "cameras",
+        "cooldown_seconds",
+        "quiet_hours_suppress",
+        "quiet_hours_start",
+        "quiet_hours_end",
+        "aggregation_window_seconds",
+        "aggregation_max_events"
+      ],
+      "properties": {
+        "rule_id": {"$ref": "#/$defs/id"},
+        "event_types": {
+          "$ref": "#/$defs/enumSet",
+          "items": {"enum": [
+            "sleeping", "awake", "crying", "movement",
+            "adult_interaction", "possible_risk", "unknown"
+          ]}
+        },
+        "risk_levels": {
+          "$ref": "#/$defs/enumSet",
+          "items": {"enum": ["none", "low", "medium", "high"]}
+        },
+        "review_statuses": {
+          "$ref": "#/$defs/enumSet",
+          "items": {"enum": ["final", "pending_review"]}
+        },
+        "sink_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sinkId"}
+        },
+        "local_only": {"type": "boolean"},
+        "cameras": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "cooldown_seconds": {"type": "number", "minimum": 0, "maximum": 86400},
+        "quiet_hours_suppress": {"type": "boolean"},
+        "quiet_hours_start": {"$ref": "#/$defs/clockTime"},
+        "quiet_hours_end": {"$ref": "#/$defs/clockTime"},
+        "aggregation_window_seconds": {"type": "number", "minimum": 0, "maximum": 86400},
+        "aggregation_max_events": {"type": "integer", "minimum": 1, "maximum": 100}
+      }
+    }
+  }
+}

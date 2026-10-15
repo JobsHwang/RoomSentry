@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor External Source Admission v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "source_id",
+    "asset_kind",
+    "canonical_url",
+    "accessed_on",
+    "source_revision",
+    "upstream_name",
+    "license",
+    "access",
+    "content",
+    "privacy",
+    "labels",
+    "admission"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "source_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "asset_kind": {
+      "enum": [
+        "audio_asset",
+        "code_archive",
+        "dataset_archive",
+        "media_asset",
+        "model_weights",
+        "vendor_event_export"
+      ]
+    },
+    "canonical_url": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://[^?#]+$",
+          "maxLength": 2048
+        }
+      ]
+    },
+    "accessed_on": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "format": "date"}
+      ]
+    },
+    "source_revision": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:@+-]{0,127}$"
+        }
+      ]
+    },
+    "upstream_name": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "^[^\\u0000\\r\\n]+$"
+        }
+      ]
+    },
+    "license": {"$ref": "#/$defs/license"},
+    "access": {"$ref": "#/$defs/access"},
+    "content": {"$ref": "#/$defs/content"},
+    "privacy": {"$ref": "#/$defs/privacy"},
+    "labels": {"$ref": "#/$defs/labels"},
+    "admission": {"$ref": "#/$defs/admission"}
+  },
+  "$defs": {
+    "factState": {
+      "enum": ["yes", "no", "not_applicable", "unknown"]
+    },
+    "licenseUse": {
+      "enum": ["allowed", "restricted", "prohibited", "unknown"]
+    },
+    "optionalBytes": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 274877906944
+        }
+      ]
+    },
+    "codes": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{0,63}$"
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "spdx_id",
+        "terms_url",
+        "commercial_use",
+        "modification",
+        "redistribution"
+      ],
+      "properties": {
+        "name": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000\\r\\n]+$"
+            }
+          ]
+        },
+        "spdx_id": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9.+-]{0,79}$"
+            }
+          ]
+        },
+        "terms_url": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://[^?#]+$",
+              "maxLength": 2048
+            }
+          ]
+        },
+        "commercial_use": {"$ref": "#/$defs/licenseUse"},
+        "modification": {"$ref": "#/$defs/licenseUse"},
+        "redistribution": {"$ref": "#/$defs/licenseUse"}
+      }
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gated", "authentication_required", "expected_bytes"],
+      "properties": {
+        "gated": {"$ref": "#/$defs/factState"},
+        "authentication_required": {"$ref": "#/$defs/factState"},
+        "expected_bytes": {"$ref": "#/$defs/optionalBytes"}
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_bytes", "sha256"],
+      "properties": {
+        "observed_bytes": {"$ref": "#/$defs/optionalBytes"},
+        "sha256": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          ]
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "real_minors",
+        "faces",
+        "audio",
+        "device_or_account_ids",
+        "precise_timestamps",
+        "private_household_data"
+      ],
+      "properties": {
+        "real_minors": {"$ref": "#/$defs/factState"},
+        "faces": {"$ref": "#/$defs/factState"},
+        "audio": {"$ref": "#/$defs/factState"},
+        "device_or_account_ids": {"$ref": "#/$defs/factState"},
+        "precise_timestamps": {"$ref": "#/$defs/factState"},
+        "private_household_data": {"$ref": "#/$defs/factState"}
+      }
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "human_verified", "ground_truth"],
+      "properties": {
+        "origin": {
+          "enum": [
+            "contributor_self_report",
+            "human_expert",
+            "human_nonexpert",
+            "model_generated",
+            "none",
+            "publisher_description",
+            "synthetic_program",
+            "unknown",
+            "vendor_rule"
+          ]
+        },
+        "human_verified": {"type": "boolean"},
+        "ground_truth": {"type": "boolean"}
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tier",
+        "status",
+        "purpose",
+        "requires_user_approval",
+        "user_approval_recorded",
+        "git_allowed",
+        "ci_allowed",
+        "redistribution_allowed",
+        "training_allowed",
+        "reviewed_on",
+        "blocker_codes",
+        "restriction_codes"
+      ],
+      "properties": {
+        "tier": {
+          "oneOf": [
+            {"type": "null"},
+            {"enum": ["A", "B", "C"]}
+          ]
+        },
+        "status": {
+          "enum": ["blocked", "approved_for_download", "verified_local"]
+        },
+        "purpose": {
+          "enum": [
+            "adapter_development",
+            "dynamic_failure_baseline",
+            "model_evaluation",
+            "public_regression",
+            "research_only",
+            "vendor_signal_correlation"
+          ]
+        },
+        "requires_user_approval": {"type": "boolean"},
+        "user_approval_recorded": {"type": "boolean"},
+        "git_allowed": {"type": "boolean"},
+        "ci_allowed": {"type": "boolean"},
+        "redistribution_allowed": {"type": "boolean"},
+        "training_allowed": {"type": "boolean"},
+        "reviewed_on": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "format": "date"}
+          ]
+        },
+        "blocker_codes": {"$ref": "#/$defs/codes"},
+        "restriction_codes": {"$ref": "#/$defs/codes"}
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+[Unit]
+Description=Baby Monitor manual loopback dashboard
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=%h/projects/baby-monitor
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor home-dashboard \
+  --config %h/projects/baby-monitor/config/home-shadow.local.toml \
+  --ha-outbox-database %h/.local/share/baby-monitor/ha-signal-outbox/signals.sqlite3 \
+  --analysis-database %h/projects/baby-monitor/data/shadow/state/events.sqlite3 \
+  --candidate-health %h/projects/baby-monitor/data/shadow/buffer/camera_01/candidate-health.json \
+  --candidate-health %h/projects/baby-monitor/data/shadow/buffer/camera_02/candidate-health.json \
+  --candidate-health %h/projects/baby-monitor/data/shadow/buffer/camera_03/candidate-health.json \
+  --candidate-health %h/projects/baby-monitor/data/shadow/buffer/camera_04/candidate-health.json \
+  --candidate-soak-ledger %h/projects/baby-monitor/data/shadow/state/candidate-soak-ledger.json \
+  --room-registry %h/.config/roomsentry/room-registry.json \
+  --room-presence-samples %h/projects/baby-monitor/data/shadow/buffer/camera_01/stream-presence-batch.json \
+  --room-presence-samples %h/projects/baby-monitor/data/shadow/buffer/camera_02/stream-presence-batch.json \
+  --room-presence-samples %h/projects/baby-monitor/data/shadow/buffer/camera_03/stream-presence-batch.json \
+  --room-presence-samples %h/projects/baby-monitor/data/shadow/buffer/camera_04/stream-presence-batch.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_01/candidate-health.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_02/candidate-health.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_03/candidate-health.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_04/candidate-health.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_01/candidate-soak-health.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_02/candidate-soak-health.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_03/candidate-soak-health.json \
+  --room-presence-health %h/projects/baby-monitor/data/shadow/buffer/camera_04/candidate-soak-health.json \
+  --port 8765 \
+  --max-runtime-seconds 28800
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+KillMode=mixed
+UMask=0077
+Nice=10
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=read-only
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/state
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectSystem=strict
+ProcSubset=pid
+RestrictAddressFamilies=AF_UNIX AF_INET
+IPAddressDeny=any
+IPAddressAllow=localhost
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+TasksMax=64
+MemoryMax=256M
+CPUQuota=25%
+OOMPolicy=stop
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=baby-monitor-dashboard
+LogRateLimitIntervalSec=30s
+LogRateLimitBurst=50
+
+# Deliberately no [Install] section: the dashboard is manual-start only.

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/notification-message-v1.schema.json",
+  "title": "Baby Monitor Notification Message v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "notification_id",
+    "event_id",
+    "camera_id",
+    "occurred_at",
+    "review_status",
+    "event_type",
+    "risk_level",
+    "confidence",
+    "subjects",
+    "observations",
+    "inferences",
+    "summary_zh",
+    "review_tier",
+    "review_reasons",
+    "contradictions",
+    "final_source",
+    "remote_used"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "notification_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "camera_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "review_status": {
+      "type": "string",
+      "enum": ["final", "pending_review"]
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "sleeping",
+        "awake",
+        "crying",
+        "movement",
+        "adult_interaction",
+        "possible_risk",
+        "unknown"
+      ]
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high"]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "subjects": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "confidence"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["baby", "adult", "person", "pet", "unknown"]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "maxItems": 128,
+      "items": { "type": "string", "minLength": 1, "maxLength": 2000 }
+    },
+    "inferences": {
+      "type": "array",
+      "maxItems": 128,
+      "items": { "type": "string", "minLength": 1, "maxLength": 2000 }
+    },
+    "summary_zh": { "type": "string", "maxLength": 4096 },
+    "review_tier": {
+      "type": "string",
+      "enum": ["none", "local_primary", "local_secondary", "remote"]
+    },
+    "review_reasons": {
+      "type": "array",
+      "maxItems": 128,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9_]{1,80}$" }
+    },
+    "contradictions": {
+      "type": "array",
+      "maxItems": 128,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9_]{1,80}$" }
+    },
+    "final_source": {
+      "type": "string",
+      "enum": ["local_primary", "local_secondary", "remote"]
+    },
+    "remote_used": { "type": "boolean" }
+  }
+}

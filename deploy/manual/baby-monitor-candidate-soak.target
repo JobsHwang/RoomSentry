@@ -1,0 +1,14 @@
+[Unit]
+Description=Baby monitor manual four-camera YOLO soak
+Requires=baby-monitor-candidate-soak-baseline.service baby-monitor-candidate-soak-stop.timer
+Wants=xiaomi-stream-gateway.service
+Wants=baby-monitor-home_shadow-init.service
+Wants=baby-monitor-home_shadow-camera_01-buffer.service baby-monitor-candidate-soak@camera_01.service
+Wants=baby-monitor-home_shadow-camera_02-buffer.service baby-monitor-candidate-soak@camera_02.service
+Wants=baby-monitor-home_shadow-camera_03-buffer.service baby-monitor-candidate-soak@camera_03.service
+Wants=baby-monitor-home_shadow-camera_04-buffer.service baby-monitor-candidate-soak@camera_04.service
+After=baby-monitor-candidate-soak-baseline.service xiaomi-stream-gateway.service baby-monitor-home_shadow-init.service
+Conflicts=baby-monitor-home_shadow-analysis.service baby-monitor-home_shadow-notification.service
+Conflicts=baby-monitor-home_shadow-visual-predicate-shadow.service baby-monitor-mage-shadow-once.service
+Conflicts=baby-monitor-home_shadow-camera_01-candidate.service baby-monitor-home_shadow-camera_02-candidate.service
+Conflicts=baby-monitor-home_shadow-camera_03-candidate.service baby-monitor-home_shadow-camera_04-candidate.service

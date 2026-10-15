@@ -1,0 +1,57 @@
+{
+  "version": 2,
+  "rooms": [
+    {
+      "room_id": "room_a",
+      "display_name": "房间 A"
+    },
+    {
+      "room_id": "room_b",
+      "display_name": "房间 B"
+    },
+    {
+      "room_id": "room_c",
+      "display_name": "房间 C"
+    }
+  ],
+  "physical_cameras": [
+    {
+      "physical_camera_id": "physical_01",
+      "display_name": "双通道摄像头"
+    },
+    {
+      "physical_camera_id": "physical_02",
+      "display_name": "摄像头 2"
+    },
+    {
+      "physical_camera_id": "physical_03",
+      "display_name": "摄像头 3"
+    }
+  ],
+  "logical_streams": [
+    {
+      "camera_id": "camera_01",
+      "physical_camera_id": "physical_01",
+      "room_id": "room_a",
+      "display_name": "视角 1"
+    },
+    {
+      "camera_id": "camera_02",
+      "physical_camera_id": "physical_01",
+      "room_id": "room_b",
+      "display_name": "视角 2"
+    },
+    {
+      "camera_id": "camera_03",
+      "physical_camera_id": "physical_02",
+      "room_id": "room_b",
+      "display_name": "主视角"
+    },
+    {
+      "camera_id": "camera_04",
+      "physical_camera_id": "physical_03",
+      "room_id": "room_c",
+      "display_name": "主视角"
+    }
+  ]
+}

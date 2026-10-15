@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "backend": "opencv_dnn",
+  "model_format": "ONNX",
+  "role": "detector",
+  "model_id": "OpenCV.Zoo.YuNet.2023mar",
+  "upstream_revision": "f12e12798e8314f7c074a6656816c048dcc95b7a",
+  "filename": "face_detection_yunet_2023mar.onnx",
+  "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+  "size_bytes": 232589,
+  "source_url": "https://media.githubusercontent.com/media/opencv/opencv_zoo/f12e12798e8314f7c074a6656816c048dcc95b7a/models/face_detection_yunet/face_detection_yunet_2023mar.onnx",
+  "license_spdx": "MIT",
+  "license_url": "https://github.com/opencv/opencv_zoo/blob/f12e12798e8314f7c074a6656816c048dcc95b7a/models/face_detection_yunet/LICENSE",
+  "input_width": 320,
+  "input_height": 320,
+  "input_color_space": "BGR",
+  "landmark_count": 5,
+  "embedding_dimension": null,
+  "preprocessing_revision": "opencv_face_detectoryn_320_bgr_v1",
+  "unsafe_pickle": false,
+  "automatic_download": false,
+  "identity_decision_authority": false
+}

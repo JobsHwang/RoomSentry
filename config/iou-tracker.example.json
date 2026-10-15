@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "iou_threshold": 0.3,
+  "max_track_age_seconds": 2.0,
+  "max_active_tracks": 128,
+  "max_processed_frames": 1000,
+  "max_pending_observations": 1000
+}

@@ -1,0 +1,101 @@
+name: Core CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: core-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONHASHSEED: "0"
+    steps:
+      - name: Check out the Git index
+        # actions/checkout v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Python
+        # actions/setup-python v6.2.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install the pinned linter only
+        run: python -m pip install ruff==0.16.1
+
+      - name: Install the standard-library core offline
+        run: |
+          bash scripts/install_core_venv.sh
+          echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
+
+      - name: Run the standard-library suite
+        run: python -m unittest discover -s tests -t . -v
+
+      - name: Run Ruff
+        run: ruff check src tests scripts
+
+      - name: Check Ruff formatting
+        run: ruff format --check src tests scripts
+
+      - name: Check the CLI reference is current
+        run: python scripts/generate_cli_reference.py --check --output docs/cli-reference.md
+
+      - name: Check the configuration reference is current
+        run: python scripts/generate_config_reference.py --check --output docs/configuration.md
+
+      - name: Check the import contract
+        run: python scripts/check_import_rules.py
+
+      - name: Compile Python sources
+        run: python -m compileall -q src tests
+
+      - name: Validate public JSON fixtures
+        run: |
+          python -m baby_monitor validate-json tests/fixtures/valid_vlm_event.json
+          python -m baby_monitor validate-signal-json tests/fixtures/valid_signal_event.json
+          python -m baby_monitor validate-decision-json tests/fixtures/valid_decision_record.json
+          python -m baby_monitor validate-notification-json tests/fixtures/valid_notification_message.json
+
+      - name: Parse every public JSON Schema
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          for path in sorted(Path("schemas").glob("*.json")):
+              json.loads(path.read_text(encoding="utf-8"))
+          PY
+
+      - name: Audit the staged release surface
+        run: python -m baby_monitor release-audit --root .
+
+      - name: Generate the deterministic source SBOM twice
+        run: |
+          python -m baby_monitor release-sbom --root . > "$RUNNER_TEMP/source-a.cdx.json"
+          python -m baby_monitor release-sbom --root . > "$RUNNER_TEMP/source-b.cdx.json"
+          cmp --silent "$RUNNER_TEMP/source-a.cdx.json" "$RUNNER_TEMP/source-b.cdx.json"
+
+      - name: Build the deterministic source release twice
+        run: |
+          python -m baby_monitor release-bundle --root . --output "$RUNNER_TEMP/source-a.tar.gz"
+          python -m baby_monitor release-bundle --root . --output "$RUNNER_TEMP/source-b.tar.gz"
+          cmp --silent "$RUNNER_TEMP/source-a.tar.gz" "$RUNNER_TEMP/source-b.tar.gz"

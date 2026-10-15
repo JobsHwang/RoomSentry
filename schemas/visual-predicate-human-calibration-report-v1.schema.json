@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/visual-predicate-human-calibration-report-v1.schema.json",
+  "title": "Baby Monitor VisualPredicateHumanCalibrationReport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "observation_count",
+    "labeled_observation_count",
+    "answer_count",
+    "labeled_answer_count",
+    "unlabeled_answer_count",
+    "exact_agreement_count",
+    "exact_agreement_rate",
+    "groups",
+    "human_reviewed_visible_fact_labels",
+    "exact_answer_agreement_evaluated",
+    "risk_accuracy_evaluated",
+    "media_read",
+    "paths_disclosed",
+    "event_identity_disclosed",
+    "subject_identity_inference",
+    "notification_decision"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "observation_count": {"$ref": "#/$defs/count"},
+    "labeled_observation_count": {"$ref": "#/$defs/count"},
+    "answer_count": {"$ref": "#/$defs/count"},
+    "labeled_answer_count": {"$ref": "#/$defs/count"},
+    "unlabeled_answer_count": {"$ref": "#/$defs/count"},
+    "exact_agreement_count": {"$ref": "#/$defs/count"},
+    "exact_agreement_rate": {"$ref": "#/$defs/optionalRatio"},
+    "groups": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {"$ref": "#/$defs/group"}
+    },
+    "human_reviewed_visible_fact_labels": {"const": true},
+    "exact_answer_agreement_evaluated": {"type": "boolean"},
+    "risk_accuracy_evaluated": {"const": false},
+    "media_read": {"const": false},
+    "paths_disclosed": {"const": false},
+    "event_identity_disclosed": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "notification_decision": {"const": false}
+  },
+  "$defs": {
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "optionalRatio": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "number", "minimum": 0, "maximum": 1}
+      ]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "predicate": {
+      "enum": [
+        "face_visibility",
+        "support_contact_visible",
+        "posture_transition_visible",
+        "covering_near_face_visible"
+      ]
+    },
+    "answer": {
+      "enum": [
+        "clear",
+        "partially_obscured",
+        "not_visible",
+        "yes",
+        "no",
+        "unknown"
+      ]
+    },
+    "confusionCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_answer", "human_answer", "count"],
+      "properties": {
+        "model_answer": {"$ref": "#/$defs/answer"},
+        "human_answer": {"$ref": "#/$defs/answer"},
+        "count": {"$ref": "#/$defs/count"}
+      }
+    },
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_id",
+        "model_revision",
+        "prompt_version",
+        "predicate",
+        "answer_count",
+        "labeled_answer_count",
+        "unlabeled_answer_count",
+        "exact_agreement_count",
+        "exact_agreement_rate",
+        "human_unknown_count",
+        "model_unknown_count",
+        "confusion"
+      ],
+      "properties": {
+        "model_id": {"$ref": "#/$defs/id"},
+        "model_revision": {"$ref": "#/$defs/id"},
+        "prompt_version": {"$ref": "#/$defs/id"},
+        "predicate": {"$ref": "#/$defs/predicate"},
+        "answer_count": {"$ref": "#/$defs/count"},
+        "labeled_answer_count": {"$ref": "#/$defs/count"},
+        "unlabeled_answer_count": {"$ref": "#/$defs/count"},
+        "exact_agreement_count": {"$ref": "#/$defs/count"},
+        "exact_agreement_rate": {"$ref": "#/$defs/optionalRatio"},
+        "human_unknown_count": {"$ref": "#/$defs/count"},
+        "model_unknown_count": {"$ref": "#/$defs/count"},
+        "confusion": {
+          "type": "array",
+          "maxItems": 36,
+          "items": {"$ref": "#/$defs/confusionCell"}
+        }
+      }
+    }
+  },
+  "$comment": "Canonical Python aggregation additionally enforces latest-label selection, exact accounting, model/prompt separation, and media-free read-only behavior."
+}

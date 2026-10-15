@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "camera_id": "cam_01",
+  "detector_adapter": "synthetic_detector",
+  "detection_batch_sha256": "d6164a95c617d0f698cd003328cd85d8e5cae4402950b848e2605c52a33c2a6b",
+  "tracker_adapter": "synthetic_split_tracker_v1",
+  "tracker_revision": "split_person_link_v1",
+  "tracker_config_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "runtime_id": "python_stdlib",
+  "assignments": [
+    {
+      "frame_id": "frame_0001",
+      "detection_id": "det_0001_person",
+      "tracking_id": "track_66ea22639ce572d39c87a09d"
+    },
+    {
+      "frame_id": "frame_0001",
+      "detection_id": "det_0001_sports_ball",
+      "tracking_id": "track_f0f373328c04ca0cc8c30f40"
+    },
+    {
+      "frame_id": "frame_0002",
+      "detection_id": "det_0002_person",
+      "tracking_id": "track_split_person_frame_2"
+    },
+    {
+      "frame_id": "frame_0002",
+      "detection_id": "det_0002_sports_ball",
+      "tracking_id": "track_f0f373328c04ca0cc8c30f40"
+    }
+  ],
+  "subject_identity_inference": false,
+  "paths_disclosed": false
+}

@@ -1,0 +1,13 @@
+{
+  "algorithm": "bytetrack",
+  "canvas_width": 384,
+  "canvas_height": 288,
+  "track_high_thresh": 0.25,
+  "track_low_thresh": 0.1,
+  "new_track_thresh": 0.25,
+  "track_buffer": 30,
+  "match_thresh": 0.8,
+  "fuse_score": true,
+  "max_input_gap_seconds": 1.0,
+  "emit_tentative_assignments": false
+}

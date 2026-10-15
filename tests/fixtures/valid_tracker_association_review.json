@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "camera_id": "cam_01",
+  "detector_adapter": "synthetic_detector",
+  "detection_batch_sha256": "d6164a95c617d0f698cd003328cd85d8e5cae4402950b848e2605c52a33c2a6b",
+  "source_admission_sha256": null,
+  "review_status": "approved",
+  "assignments": [
+    {
+      "frame_id": "frame_0001",
+      "detection_id": "det_0001_person",
+      "review_state": "assigned",
+      "subject_id": "subject_001"
+    },
+    {
+      "frame_id": "frame_0001",
+      "detection_id": "det_0001_sports_ball",
+      "review_state": "assigned",
+      "subject_id": "subject_002"
+    },
+    {
+      "frame_id": "frame_0002",
+      "detection_id": "det_0002_person",
+      "review_state": "assigned",
+      "subject_id": "subject_001"
+    },
+    {
+      "frame_id": "frame_0002",
+      "detection_id": "det_0002_sports_ball",
+      "review_state": "assigned",
+      "subject_id": "subject_002"
+    }
+  ],
+  "reviews": [
+    {
+      "reviewer_id": "reviewer_01",
+      "reviewed_at": "2026-08-08T00:00:00+00:00",
+      "verdict": "approve"
+    }
+  ],
+  "human_labels": true,
+  "ground_truth_provenance": "local_human_review",
+  "scope": "association_on_detector_boxes",
+  "identity_semantics": "anonymous_within_review",
+  "model_generated_labels": false,
+  "source_media_included": false,
+  "paths_disclosed": false
+}

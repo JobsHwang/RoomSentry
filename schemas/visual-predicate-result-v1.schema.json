@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baby-monitor.local/schemas/visual-predicate-result-v1.schema.json",
+  "title": "Visual Predicate Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "event_id",
+    "predicate",
+    "answer",
+    "confidence",
+    "evidence_frames",
+    "model_id",
+    "model_revision",
+    "prompt_version",
+    "subject_identity_inference",
+    "risk_inference",
+    "notification_decision"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "event_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "predicate": {
+      "enum": [
+        "face_visibility",
+        "support_contact_visible",
+        "posture_transition_visible",
+        "covering_near_face_visible"
+      ]
+    },
+    "answer": {
+      "enum": ["yes", "no", "unknown", "clear", "partially_obscured", "not_visible"]
+    },
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "evidence_frames": {
+      "type": "array",
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"}
+    },
+    "model_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "model_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "prompt_version": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "subject_identity_inference": {"const": false},
+    "risk_inference": {"const": false},
+    "notification_decision": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"predicate": {"const": "face_visibility"}}},
+      "then": {"properties": {"answer": {"enum": ["clear", "partially_obscured", "not_visible", "unknown"]}}},
+      "else": {"properties": {"answer": {"enum": ["yes", "no", "unknown"]}}}
+    },
+    {
+      "if": {"properties": {"answer": {"const": "unknown"}}},
+      "then": {
+        "properties": {
+          "confidence": {"maximum": 0.5},
+          "evidence_frames": {"maxItems": 0}
+        }
+      },
+      "else": {"properties": {"evidence_frames": {"minItems": 1}}}
+    }
+  ],
+  "$comment": "The canonical parser additionally checks evidence frame IDs against the request allowlist."
+}

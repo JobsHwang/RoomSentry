@@ -1,0 +1,7 @@
+[Unit]
+Description=Stop the manual four-camera YOLO soak after 24 hours
+
+[Timer]
+OnActiveSec=86400s
+AccuracySec=1s
+Unit=baby-monitor-candidate-soak-stop.service

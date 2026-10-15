@@ -1,0 +1,80 @@
+# Backends run sequentially. Keep both disabled until each model is installed
+# and tested independently. Commands must print one strict JSON object to stdout.
+
+[run]
+dataset = "../evaluation/dataset.example.jsonl"
+output_dir = "../artifacts/vlm-ab"
+poll_interval_seconds = 0.25
+
+[backends.mock]
+enabled = true
+kind = "mock"
+
+[backends.minicpm_v]
+enabled = false
+kind = "command"
+model_id = "openbmb/MiniCPM-V-4.6"
+revision = "8169864629825dc1d755a5aa1cd8b5935dcbc83f"
+prompt_version = "vlm_event_minicpm_v4_20261006_unicode_constraints"
+runtime_id = "transformers5.7_bf16_lmfe0.11.3_template_v2"
+command = [
+  "/path/to/minicpm-v46-venv/bin/python",
+  "-m",
+  "baby_monitor.local_runners.minicpm_v46",
+  "--request",
+  "{request}",
+  "--model-path",
+  "/path/to/pinned/openbmb/MiniCPM-V-4.6/snapshot",
+]
+
+[backends.mage_vl_4b]
+enabled = false
+kind = "command"
+model_id = "microsoft/Mage-VL"
+revision = "5c78cab61938e73859b63724d9bf5cb88c477eaa"
+prompt_version = "vlm_event_v5_20260912_coverage_unverified"
+runtime_id = "transformers5.7_bf16_sdpa_jsonpost_v1"
+# Keep disabled until the exact snapshot has been reviewed and its private
+# trusted-code manifest has been created. The confirmation flag applies to
+# this one short-lived runner process; it never authorizes a download.
+command = [
+  "/path/to/mage-vl-4b-venv/bin/python",
+  "-m",
+  "baby_monitor.local_runners.mage_vl_4b",
+  "run",
+  "--request",
+  "{request}",
+  "--model-path",
+  "/path/to/materialized/microsoft/Mage-VL/snapshot",
+  "--code-manifest",
+  "/absolute/private/path/mage-vl-code-manifest.json",
+  "--revision",
+  "5c78cab61938e73859b63724d9bf5cb88c477eaa",
+  "--confirm-reviewed-remote-code",
+  "--max-gpu-memory-mib",
+  "10240",
+  "--max-cpu-memory-mib",
+  "12288",
+]
+
+# Product layer 2 (after YOLO), not a second simultaneously resident local VLM.
+# Experimental one-frame cases ONLY; the 3-8-frame production media contract is
+# deliberately unchanged. No silent first-frame selection. No downloader.
+[backends.bonsai_2_27b]
+enabled = false
+kind = "command"
+model_id = "bonsai_2_27b"
+revision = "b072e1d3b35a0a630cece372c2127528e0994386"
+prompt_version = "bonsai_single_frame_v1_20260929"
+runtime_id = "llama_prism_adfffbe_cuda128_ctx4096_singleframe"
+command = [
+  "/usr/bin/unshare", "--user", "--map-root-user", "--net",
+  "/absolute/path/to/core-venv/bin/python",
+  "-m", "baby_monitor.local_runners.bonsai_27b",
+  "--request", "{request}",
+  "--model-directory", "/absolute/private/path/to/bonsai-model-assets",
+  "--runtime-directory", "/absolute/private/path/to/verified-llama-prism-runtime",
+  "--runtime-manifest", "/absolute/private/path/to/reviewed-runtime-manifest.json",
+  "--cuda-library-directory", "/absolute/private/path/to/nvidia/cublas/lib",
+  "--cuda-library-directory", "/absolute/private/path/to/nvidia/cuda_runtime/lib",
+]

@@ -1,0 +1,68 @@
+[Unit]
+Description=Baby Monitor manual HA signal to local buffer dispatcher
+After=baby-monitor-ha-signals.service baby-monitor-home_shadow-camera_01-buffer.service
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+Type=simple
+WorkingDirectory=%h/projects/baby-monitor
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor ha-signal-dispatch-worker \
+  --outbox-database %h/.local/share/baby-monitor/ha-signal-outbox/signals.sqlite3 \
+  --route-map %h/.local/share/baby-monitor/ha-signal-dispatch/routes.json \
+  --config %h/projects/baby-monitor/config/home-shadow.local.toml \
+  --staging-root %h/.local/share/baby-monitor/ha-signal-dispatch/staging \
+  --analysis-database %h/projects/baby-monitor/data/shadow/state/events.sqlite3 \
+  --output-root %h/projects/baby-monitor/data/shadow/spool \
+  --lease-seconds 240 \
+  --max-attempts 5 \
+  --retry-delay-seconds 30 \
+  --command-timeout-seconds 180 \
+  --max-runtime-seconds 86400 \
+  --poll-seconds 2
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillMode=mixed
+UMask=0077
+Nice=10
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=read-only
+ReadWritePaths=%h/.local/share/baby-monitor/ha-signal-outbox
+ReadWritePaths=%h/.local/share/baby-monitor/ha-signal-dispatch/staging
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/spool
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/state
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectSystem=strict
+ProcSubset=pid
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+TasksMax=128
+MemoryMax=1G
+CPUQuota=100%
+OOMPolicy=stop
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=baby-monitor-ha-signal-dispatch
+LogRateLimitIntervalSec=30s
+LogRateLimitBurst=100
+
+# Deliberately no [Install] section: this worker is manual-start only.

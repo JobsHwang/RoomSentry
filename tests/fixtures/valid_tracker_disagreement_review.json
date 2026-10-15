@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "detection_batch_sha256": "d6164a95c617d0f698cd003328cd85d8e5cae4402950b848e2605c52a33c2a6b",
+  "comparison_sha256": "1dbeaac03df793039a7787e985ef90aa02b4030a69cd8a49466cbb84e050ca3d",
+  "left_prediction_sha256": "43f7a0cb4104ad23adf6b224c042551244f64efdd1729e1d4cc28c86f3dae34b",
+  "right_prediction_sha256": "b6be66d47eb7d9d1d206a5d0b89f0e6716886d0b25e9d7e8b8005805414c9f01",
+  "review_status": "approved",
+  "links": [
+    {
+      "link_id": "link_0380d5fe6a0dc4ada911c644",
+      "previous_frame_id": "frame_0001",
+      "previous_detection_id": "det_0001_person",
+      "current_frame_id": "frame_0002",
+      "current_detection_id": "det_0002_person",
+      "proposed_by": "left",
+      "link_kind": "continuous",
+      "review_state": "same_subject"
+    }
+  ],
+  "reviews": [
+    {
+      "reviewer_id": "reviewer_fixture",
+      "reviewed_at": "2026-08-10T03:04:05+00:00",
+      "verdict": "approve"
+    }
+  ],
+  "human_labels": true,
+  "scope": "pairwise_disagreement_links",
+  "model_generated_labels": false,
+  "source_media_included": false,
+  "paths_disclosed": false
+}

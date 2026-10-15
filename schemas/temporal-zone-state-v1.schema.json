@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor TemporalZoneState v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "config_identity",
+    "updated_at",
+    "tracks",
+    "processed_observations",
+    "pending_signals"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "config_identity": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "updated_at": {
+      "oneOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "tracks": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/track"}
+    },
+    "processed_observations": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/processedObservation"}
+    },
+    "pending_signals": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "signal-event-v1.schema.json"}
+    }
+  },
+  "$defs": {
+    "processedObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observation_id", "fingerprint"],
+      "properties": {
+        "observation_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "track": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "camera_id",
+        "tracking_id",
+        "zone_id",
+        "label",
+        "inside",
+        "entered_at",
+        "last_inside_at",
+        "last_seen_at",
+        "dwell_emitted"
+      ],
+      "properties": {
+        "camera_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "tracking_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "zone_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "label": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "inside": {"type": "boolean"},
+        "entered_at": {
+          "oneOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "last_inside_at": {
+          "oneOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "last_seen_at": {"type": "string", "format": "date-time"},
+        "dwell_emitted": {"type": "boolean"}
+      }
+    }
+  }
+}

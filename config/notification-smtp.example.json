@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "kind": "smtp",
+  "sink_id": "family_email",
+  "host": "smtp.example.invalid",
+  "port": 465,
+  "security": "tls",
+  "username": "replace@example.invalid",
+  "password": "replace-in-private-copy",
+  "from_address": "replace@example.invalid",
+  "to_addresses": [
+    "replace@example.invalid"
+  ],
+  "timeout_seconds": 15
+}

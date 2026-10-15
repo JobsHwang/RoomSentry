@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "track_expiry_seconds": 30.0,
+  "max_processed_observations": 1000,
+  "zones": [
+    {
+      "zone_id": "example_zone",
+      "labels": ["person"],
+      "bbox_xyxy": [0.2, 0.2, 0.8, 0.8],
+      "dwell_seconds": 2.0,
+      "exit_margin": 0.05,
+      "minimum_confidence": 0.65
+    }
+  ]
+}

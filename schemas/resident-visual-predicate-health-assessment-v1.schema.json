@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/resident-visual-predicate-health-assessment-v1.schema.json",
+  "title": "Resident Visual Predicate Health Assessment v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "checked_at",
+    "health_checked_at",
+    "reported_state",
+    "worker_running",
+    "freshness",
+    "age_seconds",
+    "stale_after_seconds",
+    "future_tolerance_seconds",
+    "operational",
+    "reason_code",
+    "model_id",
+    "model_revision",
+    "prompt_version",
+    "successful_jobs",
+    "failed_jobs",
+    "timeout_jobs",
+    "current_worker_jobs",
+    "paths_disclosed",
+    "media_metadata_included"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "health_checked_at": { "type": "string", "format": "date-time" },
+    "reported_state": {
+      "enum": ["stopped", "starting", "ready", "busy", "failed"]
+    },
+    "worker_running": { "type": "boolean" },
+    "freshness": { "enum": ["fresh", "stale", "clock_skew"] },
+    "age_seconds": { "type": "number", "minimum": -3600 },
+    "stale_after_seconds": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 604800
+    },
+    "future_tolerance_seconds": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 3600
+    },
+    "operational": { "type": "boolean" },
+    "reason_code": {
+      "enum": [
+        "health_checked_at_in_future",
+        "resident_health_stale",
+        "fresh_stopped",
+        "fresh_starting",
+        "fresh_ready",
+        "fresh_busy",
+        "fresh_failed"
+      ]
+    },
+    "model_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "model_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "prompt_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "successful_jobs": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "failed_jobs": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "timeout_jobs": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "current_worker_jobs": { "type": "integer", "minimum": 0, "maximum": 256 },
+    "paths_disclosed": { "const": false },
+    "media_metadata_included": { "const": false }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "operational": { "const": true } },
+        "required": ["operational"]
+      },
+      "then": {
+        "properties": {
+          "freshness": { "const": "fresh" },
+          "reported_state": { "enum": ["ready", "busy"] },
+          "worker_running": { "const": true },
+          "reason_code": { "enum": ["fresh_ready", "fresh_busy"] }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "freshness": { "const": "clock_skew" } },
+        "required": ["freshness"]
+      },
+      "then": {
+        "properties": {
+          "operational": { "const": false },
+          "reason_code": { "const": "health_checked_at_in_future" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "freshness": { "const": "stale" } },
+        "required": ["freshness"]
+      },
+      "then": {
+        "properties": {
+          "operational": { "const": false },
+          "reason_code": { "const": "resident_health_stale" }
+        }
+      }
+    }
+  ],
+  "$comment": "The canonical Python assessor additionally checks timezone awareness, finite threshold values, age ordering, exact reason/state mapping, and all ResidentVisualPredicateHealth invariants."
+}

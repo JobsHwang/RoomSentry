@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "source_id": "caviar_enter_exit_crossing_paths2cor_mpeg_video",
+  "asset_kind": "media_asset",
+  "canonical_url": "https://homepages.inf.ed.ac.uk/rbf/CAVIARDATA2/EnterExitCrossingPaths2cor/EnterExitCrossingPaths2cor.mpg",
+  "accessed_on": "2026-08-10",
+  "source_revision": "last_modified_2004-10-06",
+  "upstream_name": "CAVIAR EnterExitCrossingPaths2cor MPEG video",
+  "license": {
+    "name": "Creative Commons Attribution-ShareAlike (version unspecified by publisher)",
+    "spdx_id": null,
+    "terms_url": "https://homepages.inf.ed.ac.uk/rbf/CAVIARDATA1/",
+    "commercial_use": "allowed",
+    "modification": "allowed",
+    "redistribution": "allowed"
+  },
+  "access": {
+    "gated": "no",
+    "authentication_required": "no",
+    "expected_bytes": 2856243
+  },
+  "content": {
+    "observed_bytes": 2856243,
+    "sha256": "38748ca0c32cd602729f36c55830eb9667f7ecdbbc9b627e84099107319ab036"
+  },
+  "privacy": {
+    "real_minors": "no",
+    "faces": "yes",
+    "audio": "no",
+    "device_or_account_ids": "no",
+    "precise_timestamps": "yes",
+    "private_household_data": "no"
+  },
+  "labels": {
+    "origin": "none",
+    "human_verified": false,
+    "ground_truth": false
+  },
+  "admission": {
+    "tier": "B",
+    "status": "verified_local",
+    "purpose": "model_evaluation",
+    "requires_user_approval": false,
+    "user_approval_recorded": false,
+    "git_allowed": false,
+    "ci_allowed": false,
+    "redistribution_allowed": false,
+    "training_allowed": false,
+    "reviewed_on": "2026-08-10",
+    "blocker_codes": [],
+    "restriction_codes": [
+      "adult_human_video",
+      "attribution_required",
+      "faces_present",
+      "license_version_unspecified",
+      "local_only",
+      "no_training",
+      "precise_timecode",
+      "sharealike_required"
+    ]
+  }
+}

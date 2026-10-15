@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor VisualPredicateReviewReport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "policy_version",
+    "observed_attempt_count",
+    "assessed_completed_count",
+    "review_recommended_count",
+    "unknown_count",
+    "no_rule_match_count",
+    "unassessed_counts",
+    "assessments",
+    "model_confidence_calibrated",
+    "media_read",
+    "paths_disclosed",
+    "subject_identity_inference",
+    "risk_inference",
+    "risk_level_assigned",
+    "notification_decision",
+    "notification_enqueued"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "policy_version": {"const": "atomic_visual_review_v1"},
+    "observed_attempt_count": {"$ref": "#/$defs/count"},
+    "assessed_completed_count": {"$ref": "#/$defs/count"},
+    "review_recommended_count": {"$ref": "#/$defs/count"},
+    "unknown_count": {"$ref": "#/$defs/count"},
+    "no_rule_match_count": {"$ref": "#/$defs/count"},
+    "unassessed_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pending", "running", "failed", "skipped"],
+      "properties": {
+        "pending": {"$ref": "#/$defs/count"},
+        "running": {"$ref": "#/$defs/count"},
+        "failed": {"$ref": "#/$defs/count"},
+        "skipped": {"$ref": "#/$defs/count"}
+      }
+    },
+    "assessments": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {"$ref": "#/$defs/assessment"}
+    },
+    "model_confidence_calibrated": {"const": false},
+    "media_read": {"const": false},
+    "paths_disclosed": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "risk_inference": {"const": false},
+    "risk_level_assigned": {"const": false},
+    "notification_decision": {"const": false},
+    "notification_enqueued": {"const": false}
+  },
+  "$defs": {
+    "count": {"type": "integer", "minimum": 0, "maximum": 1000},
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "policy_version",
+        "event_id",
+        "source_binding_sha256",
+        "state",
+        "reasons",
+        "manual_review_recommended",
+        "model_confidence_calibrated",
+        "confidence_threshold_applied",
+        "media_read",
+        "paths_disclosed",
+        "subject_identity_inference",
+        "risk_inference",
+        "risk_level_assigned",
+        "notification_decision",
+        "notification_enqueued"
+      ],
+      "properties": {
+        "version": {"const": 1},
+        "policy_version": {"const": "atomic_visual_review_v1"},
+        "event_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "source_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "state": {
+          "enum": ["review_recommended", "no_rule_match", "unknown"]
+        },
+        "reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 7,
+          "items": {
+            "enum": [
+              "face_not_visible",
+              "face_partially_obscured",
+              "covering_near_face_visible",
+              "face_visibility_unknown",
+              "covering_near_face_unknown",
+              "required_face_visibility_missing",
+              "required_covering_near_face_missing"
+            ]
+          }
+        },
+        "manual_review_recommended": {"type": "boolean"},
+        "model_confidence_calibrated": {"const": false},
+        "confidence_threshold_applied": {"const": false},
+        "media_read": {"const": false},
+        "paths_disclosed": {"const": false},
+        "subject_identity_inference": {"const": false},
+        "risk_inference": {"const": false},
+        "risk_level_assigned": {"const": false},
+        "notification_decision": {"const": false},
+        "notification_enqueued": {"const": false}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "no_rule_match"}}},
+          "then": {
+            "properties": {
+              "reasons": {"maxItems": 0},
+              "manual_review_recommended": {"const": false}
+            }
+          },
+          "else": {
+            "properties": {
+              "reasons": {"minItems": 1},
+              "manual_review_recommended": {"const": true}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$comment": "Aggregate sums, state/reason precedence and source-result binding remain enforced by the canonical Python policy parser. This report is shadow-only and cannot assign risk or enqueue notifications."
+}

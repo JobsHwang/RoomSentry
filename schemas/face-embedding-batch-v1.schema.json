@@ -1,0 +1,435 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/face-embedding-batch-v1.schema.json",
+  "title": "Private local face embedding batch v1",
+  "$comment": "The canonical FaceEmbeddingBatch parser additionally enforces unique frame IDs and globally unique face IDs, face.frame_ref equality with its parent image, no more than 1000 faces across all images, and finite L2-normalized embeddings. Those cross-array, parent/child, aggregate, and arithmetic checks are not all expressible in portable JSON Schema 2020-12.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "request_id",
+    "mode",
+    "face_adapter",
+    "detector_model_id",
+    "detector_model_revision",
+    "detector_model_sha256",
+    "embedding_model_id",
+    "embedding_model_revision",
+    "embedding_model_sha256",
+    "model_fingerprint",
+    "images",
+    "identity_inference",
+    "paths_disclosed",
+    "network_used"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "request_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "mode": {
+      "enum": [
+        "assessment",
+        "enrollment"
+      ]
+    },
+    "face_adapter": {
+      "$ref": "#/$defs/identifier"
+    },
+    "detector_model_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "detector_model_revision": {
+      "$ref": "#/$defs/revision"
+    },
+    "detector_model_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "embedding_model_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "embedding_model_revision": {
+      "$ref": "#/$defs/revision"
+    },
+    "embedding_model_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "model_fingerprint": {
+      "$ref": "#/$defs/sha256"
+    },
+    "images": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/image"
+      }
+    },
+    "identity_inference": {
+      "const": false
+    },
+    "paths_disclosed": {
+      "const": false
+    },
+    "network_used": {
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "const": "enrollment"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "images": {
+            "allOf": [
+              {
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "faces": {
+                      "contains": {
+                        "$ref": "#/$defs/accepted_face_marker"
+                      },
+                      "minContains": 0,
+                      "maxContains": 1
+                    }
+                  }
+                }
+              },
+              {
+                "contains": {
+                  "type": "object",
+                  "required": [
+                    "faces"
+                  ],
+                  "properties": {
+                    "faces": {
+                      "contains": {
+                        "$ref": "#/$defs/accepted_face_marker"
+                      },
+                      "minContains": 1
+                    }
+                  }
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "normalizedNumber": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "landmark": {
+      "$comment": "Coordinates are present exactly when in_frame is true.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "x",
+        "y",
+        "in_frame"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "right_eye",
+            "left_eye",
+            "nose_tip",
+            "right_mouth_corner",
+            "left_mouth_corner"
+          ]
+        },
+        "x": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/normalizedNumber"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "y": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/normalizedNumber"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "in_frame": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "in_frame"
+            ],
+            "properties": {
+              "in_frame": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "x": {
+                "$ref": "#/$defs/normalizedNumber"
+              },
+              "y": {
+                "$ref": "#/$defs/normalizedNumber"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "x": {
+                "type": "null"
+              },
+              "y": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "bbox": {
+      "$comment": "JSON Schema cannot compare array items. The canonical parser additionally requires x_min < x_max and y_min < y_max, so zero/negative-area boxes fail closed there.",
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/normalizedNumber"
+        },
+        {
+          "$ref": "#/$defs/normalizedNumber"
+        },
+        {
+          "$ref": "#/$defs/normalizedNumber"
+        },
+        {
+          "$ref": "#/$defs/normalizedNumber"
+        }
+      ],
+      "items": false
+    },
+    "accepted_face_marker": {
+      "type": "object",
+      "required": [
+        "quality_state"
+      ],
+      "properties": {
+        "quality_state": {
+          "const": "accepted"
+        }
+      }
+    },
+    "embedding": {
+      "$comment": "JSON Schema checks shape and element range. The canonical parser additionally requires every element to be finite and the vector L2 norm to equal 1 within 1e-6.",
+      "type": "array",
+      "minItems": 128,
+      "maxItems": 128,
+      "items": {
+        "type": "number",
+        "minimum": -1.0,
+        "maximum": 1.0
+      }
+    },
+    "face": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "face_id",
+        "frame_ref",
+        "bbox_xyxy",
+        "detector_confidence",
+        "landmarks",
+        "quality_state",
+        "rejection_codes",
+        "embedding"
+      ],
+      "properties": {
+        "face_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "frame_ref": {
+          "$ref": "#/$defs/identifier"
+        },
+        "bbox_xyxy": {
+          "$ref": "#/$defs/bbox"
+        },
+        "detector_confidence": {
+          "$ref": "#/$defs/normalizedNumber"
+        },
+        "landmarks": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "prefixItems": [
+            {
+              "allOf": [
+                {"$ref": "#/$defs/landmark"},
+                {"properties": {"name": {"const": "right_eye"}}}
+              ]
+            },
+            {
+              "allOf": [
+                {"$ref": "#/$defs/landmark"},
+                {"properties": {"name": {"const": "left_eye"}}}
+              ]
+            },
+            {
+              "allOf": [
+                {"$ref": "#/$defs/landmark"},
+                {"properties": {"name": {"const": "nose_tip"}}}
+              ]
+            },
+            {
+              "allOf": [
+                {"$ref": "#/$defs/landmark"},
+                {"properties": {"name": {"const": "right_mouth_corner"}}}
+              ]
+            },
+            {
+              "allOf": [
+                {"$ref": "#/$defs/landmark"},
+                {"properties": {"name": {"const": "left_mouth_corner"}}}
+              ]
+            }
+          ],
+          "items": false
+        },
+        "quality_state": {
+          "enum": [
+            "accepted",
+            "rejected"
+          ]
+        },
+        "rejection_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          }
+        },
+        "embedding": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/embedding"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "quality_state"
+            ],
+            "properties": {
+              "quality_state": {
+                "const": "accepted"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "rejection_codes": {
+                "maxItems": 0
+              },
+              "embedding": {
+                "$ref": "#/$defs/embedding"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "rejection_codes": {
+                "minItems": 1
+              },
+              "embedding": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_ref",
+        "source_sha256",
+        "width",
+        "height",
+        "faces"
+      ],
+      "properties": {
+        "frame_ref": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "faces": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/face"
+          }
+        }
+      }
+    }
+  }
+}

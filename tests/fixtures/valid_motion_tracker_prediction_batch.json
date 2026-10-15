@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "camera_id": "cam_01",
+  "detector_adapter": "synthetic_detector",
+  "detection_batch_sha256": "d6164a95c617d0f698cd003328cd85d8e5cae4402950b848e2605c52a33c2a6b",
+  "tracker_adapter": "motion_two_stage_tracker_v1",
+  "tracker_revision": "constant_velocity_global_match_v2",
+  "tracker_config_sha256": "fb7b008dcbc405647d645029635afccef39d802fa703c0be542c7d40cfec995c",
+  "runtime_id": "python_stdlib",
+  "assignments": [
+    {
+      "frame_id": "frame_0001",
+      "detection_id": "det_0001_person",
+      "tracking_id": "track_ef4a445234db472e5227b177"
+    },
+    {
+      "frame_id": "frame_0001",
+      "detection_id": "det_0001_sports_ball",
+      "tracking_id": "track_784e9711729a04cd1c15a59a"
+    },
+    {
+      "frame_id": "frame_0002",
+      "detection_id": "det_0002_person",
+      "tracking_id": "track_ef4a445234db472e5227b177"
+    },
+    {
+      "frame_id": "frame_0002",
+      "detection_id": "det_0002_sports_ball",
+      "tracking_id": "track_784e9711729a04cd1c15a59a"
+    }
+  ],
+  "subject_identity_inference": false,
+  "paths_disclosed": false
+}

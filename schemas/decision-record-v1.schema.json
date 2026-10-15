@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor DecisionRecord v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "risk_level",
+    "review_tier",
+    "review_reasons",
+    "contradictions",
+    "remote_allowed",
+    "remote_used",
+    "final_source",
+    "signal_frequency_count",
+    "signal_frequency_window_seconds",
+    "frequent_signal_types"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "risk_level": {"enum": ["none", "low", "medium", "high"]},
+    "review_tier": {"enum": ["none", "local_primary", "local_secondary", "remote"]},
+    "review_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z0-9_.:-]{1,120}$"}
+    },
+    "contradictions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z0-9_.:-]{1,120}$"}
+    },
+    "remote_allowed": {"type": "boolean"},
+    "remote_used": {"type": "boolean"},
+    "final_source": {"enum": ["local_primary", "local_secondary", "remote"]},
+    "signal_frequency_count": {"type": "integer", "minimum": 0, "maximum": 100000},
+    "signal_frequency_window_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 86400
+    },
+    "frequent_signal_types": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "motion",
+          "person",
+          "face",
+          "sound_peak",
+          "hardware_cry",
+          "zone_enter",
+          "zone_dwell",
+          "zone_exit",
+          "fall_hint",
+          "manual_trigger"
+        ]
+      }
+    }
+  }
+}

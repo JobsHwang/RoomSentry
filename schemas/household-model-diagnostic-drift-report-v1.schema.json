@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/household-model-diagnostic-drift-report-v1.schema.json",
+  "title": "Baby Monitor HouseholdModelDiagnosticDriftReport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "baseline_report_sha256",
+    "current_report_sha256",
+    "baseline_review_sha256",
+    "current_review_sha256",
+    "baseline_media_admission_sha256s",
+    "current_media_admission_sha256s",
+    "baseline_detector_scan_sha256s",
+    "current_detector_scan_sha256s",
+    "camera_ids",
+    "detector_adapter",
+    "model_id",
+    "model_revision",
+    "model_sha256",
+    "source_confidence_threshold",
+    "requested_sample_fps",
+    "bin_seconds",
+    "sampling_strategy",
+    "policy",
+    "baseline_reviewed_frame_count",
+    "baseline_evaluated_bin_count",
+    "baseline_positive_bin_count",
+    "baseline_negative_bin_count",
+    "baseline_unknown_bin_count",
+    "baseline_partial_positive_bin_count",
+    "current_reviewed_frame_count",
+    "current_evaluated_bin_count",
+    "current_positive_bin_count",
+    "current_negative_bin_count",
+    "current_unknown_bin_count",
+    "current_partial_positive_bin_count",
+    "points",
+    "attention_threshold_count",
+    "metric_availability_change_count",
+    "attention_required",
+    "version",
+    "label",
+    "ground_truth_provenance",
+    "diagnostic_only",
+    "cross_batch_comparison",
+    "same_detector_configuration_verified",
+    "same_camera_set_verified",
+    "same_sampling_and_threshold_grid_verified",
+    "disjoint_source_media_verified",
+    "disjoint_detector_scans_verified",
+    "derived_without_model_rerun",
+    "model_generated_labels",
+    "human_verified",
+    "ground_truth",
+    "official_accuracy_claim",
+    "regression_confirmed",
+    "frame_level_alignment_evaluated",
+    "candidate_trigger_coverage_evaluated",
+    "box_localization_accuracy_evaluated",
+    "danger_recognition_accuracy_evaluated",
+    "risk_accuracy_evaluated",
+    "winner_selected",
+    "shadow_preference_selected",
+    "deployment_approved",
+    "household_configuration_changed",
+    "dataset_specific_only",
+    "subject_identity_inference",
+    "source_media_included",
+    "paths_disclosed",
+    "drift_report_sha256"
+  ],
+  "properties": {
+    "baseline_report_sha256": {"$ref": "#/$defs/sha256"},
+    "current_report_sha256": {"$ref": "#/$defs/sha256"},
+    "baseline_review_sha256": {"$ref": "#/$defs/sha256"},
+    "current_review_sha256": {"$ref": "#/$defs/sha256"},
+    "baseline_media_admission_sha256s": {"$ref": "#/$defs/hashArray"},
+    "current_media_admission_sha256s": {"$ref": "#/$defs/hashArray"},
+    "baseline_detector_scan_sha256s": {"$ref": "#/$defs/hashArray"},
+    "current_detector_scan_sha256s": {"$ref": "#/$defs/hashArray"},
+    "camera_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "detector_adapter": {"$ref": "#/$defs/id"},
+    "model_id": {"$ref": "#/$defs/id"},
+    "model_revision": {"$ref": "#/$defs/id"},
+    "model_sha256": {"$ref": "#/$defs/sha256"},
+    "source_confidence_threshold": {"$ref": "#/$defs/ratio"},
+    "requested_sample_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 10
+    },
+    "bin_seconds": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 60
+    },
+    "sampling_strategy": {
+      "enum": [
+        "candidate_disagreement_and_control",
+        "candidate_targeted",
+        "uniform_grid"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maximum_precision_drop",
+        "maximum_recall_drop",
+        "maximum_specificity_drop",
+        "maximum_partial_visibility_recall_drop",
+        "require_partial_visibility_samples"
+      ],
+      "properties": {
+        "maximum_precision_drop": {"$ref": "#/$defs/ratio"},
+        "maximum_recall_drop": {"$ref": "#/$defs/ratio"},
+        "maximum_specificity_drop": {"$ref": "#/$defs/ratio"},
+        "maximum_partial_visibility_recall_drop": {"$ref": "#/$defs/ratio"},
+        "require_partial_visibility_samples": {"type": "boolean"}
+      }
+    },
+    "baseline_reviewed_frame_count": {"$ref": "#/$defs/positiveCount"},
+    "baseline_evaluated_bin_count": {"$ref": "#/$defs/positiveCount"},
+    "baseline_positive_bin_count": {"$ref": "#/$defs/positiveCount"},
+    "baseline_negative_bin_count": {"$ref": "#/$defs/positiveCount"},
+    "baseline_unknown_bin_count": {"$ref": "#/$defs/count"},
+    "baseline_partial_positive_bin_count": {"$ref": "#/$defs/count"},
+    "current_reviewed_frame_count": {"$ref": "#/$defs/positiveCount"},
+    "current_evaluated_bin_count": {"$ref": "#/$defs/positiveCount"},
+    "current_positive_bin_count": {"$ref": "#/$defs/positiveCount"},
+    "current_negative_bin_count": {"$ref": "#/$defs/positiveCount"},
+    "current_unknown_bin_count": {"$ref": "#/$defs/count"},
+    "current_partial_positive_bin_count": {"$ref": "#/$defs/count"},
+    "points": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/point"}
+    },
+    "attention_threshold_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 32
+    },
+    "metric_availability_change_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 32
+    },
+    "attention_required": {"type": "boolean"},
+    "version": {"const": 1},
+    "label": {"const": "person"},
+    "ground_truth_provenance": {"const": "model_generated_visual_review"},
+    "diagnostic_only": {"const": true},
+    "cross_batch_comparison": {"const": true},
+    "same_detector_configuration_verified": {"const": true},
+    "same_camera_set_verified": {"const": true},
+    "same_sampling_and_threshold_grid_verified": {"const": true},
+    "disjoint_source_media_verified": {"const": true},
+    "disjoint_detector_scans_verified": {"const": true},
+    "derived_without_model_rerun": {"const": true},
+    "model_generated_labels": {"const": true},
+    "human_verified": {"const": false},
+    "ground_truth": {"const": false},
+    "official_accuracy_claim": {"const": false},
+    "regression_confirmed": {"const": false},
+    "frame_level_alignment_evaluated": {"const": false},
+    "candidate_trigger_coverage_evaluated": {"const": false},
+    "box_localization_accuracy_evaluated": {"const": false},
+    "danger_recognition_accuracy_evaluated": {"const": false},
+    "risk_accuracy_evaluated": {"const": false},
+    "winner_selected": {"const": false},
+    "shadow_preference_selected": {"const": false},
+    "deployment_approved": {"const": false},
+    "household_configuration_changed": {"const": false},
+    "dataset_specific_only": {"const": true},
+    "subject_identity_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false},
+    "drift_report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "hashArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/sha256"}
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000000
+    },
+    "positiveCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "optionalRatio": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/ratio"}
+      ]
+    },
+    "optionalDelta": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "number", "minimum": -1, "maximum": 1}
+      ]
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confidence_threshold",
+        "baseline_precision",
+        "current_precision",
+        "precision_delta",
+        "baseline_recall",
+        "current_recall",
+        "recall_delta",
+        "baseline_specificity",
+        "current_specificity",
+        "specificity_delta",
+        "baseline_partial_visibility_recall",
+        "current_partial_visibility_recall",
+        "partial_visibility_recall_delta",
+        "precision_drop_exceeded",
+        "recall_drop_exceeded",
+        "specificity_drop_exceeded",
+        "partial_visibility_recall_drop_exceeded",
+        "metric_availability_changed",
+        "attention_required"
+      ],
+      "properties": {
+        "confidence_threshold": {"$ref": "#/$defs/ratio"},
+        "baseline_precision": {"$ref": "#/$defs/optionalRatio"},
+        "current_precision": {"$ref": "#/$defs/optionalRatio"},
+        "precision_delta": {"$ref": "#/$defs/optionalDelta"},
+        "baseline_recall": {"$ref": "#/$defs/optionalRatio"},
+        "current_recall": {"$ref": "#/$defs/optionalRatio"},
+        "recall_delta": {"$ref": "#/$defs/optionalDelta"},
+        "baseline_specificity": {"$ref": "#/$defs/optionalRatio"},
+        "current_specificity": {"$ref": "#/$defs/optionalRatio"},
+        "specificity_delta": {"$ref": "#/$defs/optionalDelta"},
+        "baseline_partial_visibility_recall": {"$ref": "#/$defs/optionalRatio"},
+        "current_partial_visibility_recall": {"$ref": "#/$defs/optionalRatio"},
+        "partial_visibility_recall_delta": {"$ref": "#/$defs/optionalDelta"},
+        "precision_drop_exceeded": {"type": "boolean"},
+        "recall_drop_exceeded": {"type": "boolean"},
+        "specificity_drop_exceeded": {"type": "boolean"},
+        "partial_visibility_recall_drop_exceeded": {"type": "boolean"},
+        "metric_availability_changed": {"type": "boolean"},
+        "attention_required": {"type": "boolean"}
+      }
+    }
+  }
+}

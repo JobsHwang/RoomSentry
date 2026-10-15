@@ -1,0 +1,18 @@
+{
+  "event_type": "sleeping",
+  "subjects": [
+    {
+      "kind": "baby",
+      "confidence": 0.82,
+      "evidence_frames": ["frame_02.jpg"]
+    }
+  ],
+  "observations": ["床面区域内可见一名婴儿。", "婴儿眼睛在关键帧中闭合。"],
+  "inferences": ["可能处于睡眠状态。"],
+  "risk_level": "none",
+  "confidence": 0.78,
+  "needs_remote_review": false,
+  "summary_zh": "画面显示宝宝可能在床上睡眠。",
+  "evidence_frames": ["frame_02.jpg"]
+}
+

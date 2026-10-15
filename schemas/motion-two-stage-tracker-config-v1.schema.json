@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Motion Two-Stage Tracker Config v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "high_confidence_threshold",
+    "low_confidence_threshold",
+    "primary_match_threshold",
+    "secondary_match_threshold",
+    "iou_weight",
+    "max_normalized_center_distance",
+    "max_area_ratio",
+    "max_track_age_seconds",
+    "max_prediction_seconds",
+    "max_active_tracks",
+    "max_frame_detections"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "high_confidence_threshold": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 1.0
+    },
+    "low_confidence_threshold": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 0.99
+    },
+    "primary_match_threshold": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 1.0
+    },
+    "secondary_match_threshold": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 1.0
+    },
+    "iou_weight": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "max_normalized_center_distance": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 10.0
+    },
+    "max_area_ratio": {
+      "type": "number",
+      "minimum": 1.0,
+      "maximum": 100.0
+    },
+    "max_track_age_seconds": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 300.0
+    },
+    "max_prediction_seconds": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 300.0
+    },
+    "max_active_tracks": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 512
+    },
+    "max_frame_detections": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 512
+    }
+  }
+}

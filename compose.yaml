@@ -1,0 +1,34 @@
+name: baby-monitor
+
+x-common: &common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - ./data:/app/data
+    - ./config:/app/config:ro
+  networks:
+    - private
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  pids_limit: 128
+  init: true
+  restart: "no"
+
+services:
+  # Every service is profile-gated. `docker compose up` alone starts nothing.
+  # Private values must be passed explicitly to a reviewed command; Compose does
+  # not inject the repository .env into this generic tools container.
+  cli:
+    <<: *common
+    profiles: ["tools"]
+    command: ["--help"]
+
+networks:
+  private:
+    internal: true

@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "camera_id": "public_fixture",
+  "pose_adapter": "fixture_pose_v1",
+  "model_id": "fixture_pose",
+  "model_revision": "fixture-v1",
+  "model_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "frames": [
+    {
+      "frame_id": "f000001",
+      "timestamp_seconds": 0.0,
+      "poses": [
+        {
+          "instance_id": "p0001",
+          "label": "person",
+          "confidence": 0.9,
+          "bbox_xyxy": [0.1, 0.1, 0.9, 0.9],
+          "keypoints": [
+            {"name": "nose", "x": 0.50, "y": 0.20, "confidence": 0.8, "in_frame": true},
+            {"name": "left_eye", "x": 0.47, "y": 0.18, "confidence": 0.8, "in_frame": true},
+            {"name": "right_eye", "x": 0.53, "y": 0.18, "confidence": 0.8, "in_frame": true},
+            {"name": "left_ear", "x": 0.44, "y": 0.20, "confidence": 0.8, "in_frame": true},
+            {"name": "right_ear", "x": 0.56, "y": 0.20, "confidence": 0.8, "in_frame": true},
+            {"name": "left_shoulder", "x": 0.42, "y": 0.35, "confidence": 0.8, "in_frame": true},
+            {"name": "right_shoulder", "x": 0.58, "y": 0.35, "confidence": 0.8, "in_frame": true},
+            {"name": "left_elbow", "x": 0.38, "y": 0.48, "confidence": 0.8, "in_frame": true},
+            {"name": "right_elbow", "x": 0.62, "y": 0.48, "confidence": 0.8, "in_frame": true},
+            {"name": "left_wrist", "x": 0.35, "y": 0.60, "confidence": 0.8, "in_frame": true},
+            {"name": "right_wrist", "x": 0.65, "y": 0.60, "confidence": 0.8, "in_frame": true},
+            {"name": "left_hip", "x": 0.45, "y": 0.60, "confidence": 0.8, "in_frame": true},
+            {"name": "right_hip", "x": 0.55, "y": 0.60, "confidence": 0.8, "in_frame": true},
+            {"name": "left_knee", "x": 0.44, "y": 0.75, "confidence": 0.8, "in_frame": true},
+            {"name": "right_knee", "x": 0.56, "y": 0.75, "confidence": 0.8, "in_frame": true},
+            {"name": "left_ankle", "x": 0.43, "y": 0.90, "confidence": 0.8, "in_frame": true},
+            {"name": "right_ankle", "x": 0.57, "y": 0.90, "confidence": 0.8, "in_frame": true}
+          ]
+        }
+      ]
+    }
+  ],
+  "subject_identity_inference": false,
+  "posture_classification": false,
+  "paths_disclosed": false
+}

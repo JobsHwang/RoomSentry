@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "track_expiry_seconds": 30.0,
+  "max_processed_observations": 1000,
+  "zones": [
+    {
+      "zone_id": "synthetic_full_frame",
+      "labels": ["scene_change"],
+      "bbox_xyxy": [0.0, 0.0, 1.0, 1.0],
+      "dwell_seconds": 0.5,
+      "exit_margin": 0.0,
+      "minimum_confidence": 0.0
+    }
+  ]
+}

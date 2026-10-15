@@ -1,0 +1,1 @@
+{"version":1,"case_id":"example_unknown_001","frames":[{"frame_id":"f01","path":"fixtures/neutral.ppm","sha256":"2eb80106834c38379bfe97c4b89fa20a15fb9c301d5241d6fd0d37bc3032dc4c"}],"question":"只根据可见证据判断状态；区分事实与推测，不确定时输出 unknown。","expected":{"event_type":"unknown","risk_level":"none","allowed_subjects":[],"allowed_observations":[],"allowed_inferences":[]}}

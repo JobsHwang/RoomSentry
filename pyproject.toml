@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "baby-monitor"
+version = "0.1.0"
+description = "Privacy-first, LAN-only home video event understanding for baby care"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "RoomSentry Contributors" }]
+keywords = [
+  "baby-monitor",
+  "home-security",
+  "privacy",
+  "local-first",
+  "rtsp",
+  "yolo",
+  "vlm",
+  "event-detection",
+]
+dependencies = []
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: POSIX :: Linux",
+  "Topic :: Home Automation",
+  "Topic :: Multimedia :: Video :: Capture",
+  "Topic :: Security",
+]
+
+[project.urls]
+Homepage = "https://github.com/JobsHwang/RoomSentry"
+Repository = "https://github.com/JobsHwang/RoomSentry"
+Issues = "https://github.com/JobsHwang/RoomSentry/issues"
+
+[project.optional-dependencies]
+# No model is downloaded by installing the core package. Ultralytics may install
+# PyTorch; only install this extra after the runtime plan is confirmed. Use the
+# same OpenCV distribution that Ultralytics declares so pip never installs two
+# overlapping cv2 wheels; the adapter itself does not invoke GUI APIs.
+vision = [
+  "opencv-python==4.12.0.88",
+  "ultralytics==8.4.115",
+]
+identity = [
+  "cryptography==49.0.0",
+]
+dev = [
+  "pytest>=8,<9",
+  "ruff>=0.9,<1",
+]
+
+[project.scripts]
+baby-monitor = "baby_monitor.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baby-monitor.local/schemas/room-registry-v2.schema.json",
+  "title": "Private physical camera, logical stream, and room coverage registry v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "rooms", "physical_cameras", "logical_streams"],
+  "properties": {
+    "version": {"const": 2},
+    "rooms": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/room"}
+    },
+    "physical_cameras": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/physicalCamera"}
+    },
+    "logical_streams": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/logicalStream"}
+    }
+  },
+  "$defs": {
+    "safeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "pattern": "^\\S(?:.*\\S)?$",
+      "$comment": "The canonical parser additionally rejects Unicode control and format characters."
+    },
+    "room": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["room_id", "display_name"],
+      "properties": {
+        "room_id": {"$ref": "#/$defs/safeId"},
+        "display_name": {"$ref": "#/$defs/displayName"}
+      }
+    },
+    "physicalCamera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["physical_camera_id", "display_name"],
+      "properties": {
+        "physical_camera_id": {"$ref": "#/$defs/safeId"},
+        "display_name": {"$ref": "#/$defs/displayName"}
+      }
+    },
+    "logicalStream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["camera_id", "physical_camera_id", "room_id", "display_name"],
+      "properties": {
+        "camera_id": {"$ref": "#/$defs/safeId"},
+        "physical_camera_id": {"$ref": "#/$defs/safeId"},
+        "room_id": {"$ref": "#/$defs/safeId"},
+        "display_name": {"$ref": "#/$defs/displayName"}
+      }
+    }
+  },
+  "$comment": "Room coverage belongs to each logical stream. A physical camera may cover multiple rooms without becoming multiple devices. Cross-array uniqueness, reference integrity, and no-orphan rules are enforced by the canonical parser."
+}

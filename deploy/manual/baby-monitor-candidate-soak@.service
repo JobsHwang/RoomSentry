@@ -1,0 +1,53 @@
+[Unit]
+Description=Baby monitor presence-only candidate soak worker (%i)
+PartOf=baby-monitor-candidate-soak.target
+Requires=baby-monitor-candidate-soak-baseline.service baby-monitor-home_shadow-init.service
+Wants=xiaomi-stream-gateway.service baby-monitor-home_shadow-%i-buffer.service
+After=baby-monitor-candidate-soak-baseline.service baby-monitor-home_shadow-init.service
+After=xiaomi-stream-gateway.service baby-monitor-home_shadow-%i-buffer.service
+Conflicts=baby-monitor-home_shadow-%i-candidate.service
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+WorkingDirectory=%h/projects/baby-monitor
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+MemoryMax=4G
+TasksMax=512
+TimeoutStopSec=30s
+KillMode=control-group
+Environment=PYTHONUNBUFFERED=1
+Environment=BABY_MONITOR_YOLO_IMAGE_SIZE=640
+Environment=BABY_MONITOR_ROTATION_DEGREES=0
+EnvironmentFile=-%h/.config/roomsentry/streams/%i.env
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/buffer/%i
+ReadWritePaths=%h/projects/baby-monitor/data/shadow/state
+ExecStart=%h/projects/baby-monitor/.venv/bin/python -m baby_monitor candidate-worker \
+  --config %h/projects/baby-monitor/config/home-shadow.local.toml \
+  --manifest %h/projects/baby-monitor/data/shadow/buffer/%i/manifest.json \
+  --state %h/projects/baby-monitor/data/shadow/buffer/%i/candidate-soak-scan-state.json \
+  --health %h/projects/baby-monitor/data/shadow/buffer/%i/candidate-soak-health.json \
+  --presence %h/projects/baby-monitor/data/shadow/buffer/%i/stream-presence-batch.json \
+  --detector yolo_command \
+  --image-size ${BABY_MONITOR_YOLO_IMAGE_SIZE} \
+  --rotation-degrees ${BABY_MONITOR_ROTATION_DEGREES} \
+  --max-segments 32 \
+  --idle-exit-seconds 0 \
+  --max-runtime-seconds 3600 \
+  --presence-only
+Restart=always
+RestartSec=5s
+Nice=10

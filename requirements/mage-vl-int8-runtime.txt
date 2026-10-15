@@ -1,0 +1,4 @@
+# Optional additive INT8 dependency for the isolated Mage-VL runtime.
+# Hash is from the PyPI 0.50.0 manylinux x86_64 wheel inspected on 2026-08-12.
+bitsandbytes==0.50.0 \
+    --hash=sha256:173d137610468bec9cddbaa2e049254e97792657ab984e3e737bec1772c1668c

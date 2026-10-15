@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/recognition-run-metrics-v1.schema.json",
+  "title": "RecognitionRunMetrics v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "duration_ms",
+    "json_compliant",
+    "process_rss_peak_kib",
+    "gpu_device_memory_peak_mib"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 86400000
+    },
+    "json_compliant": {"type": "boolean"},
+    "process_rss_peak_kib": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    "gpu_device_memory_peak_mib": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 10000000
+    }
+  }
+}

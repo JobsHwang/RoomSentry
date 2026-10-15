@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "source_id": "nasa_s62_05540_adult_face_smoke",
+  "asset_kind": "media_asset",
+  "canonical_url": "https://images-assets.nasa.gov/image/S62-05540/S62-05540~orig.jpg",
+  "accessed_on": "2026-08-11",
+  "source_revision": "S62-05540",
+  "upstream_name": "NASA S62-05540 official adult astronaut portrait",
+  "license": {
+    "name": "NASA Images and Media Usage Guidelines",
+    "spdx_id": null,
+    "terms_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    "commercial_use": "restricted",
+    "modification": "restricted",
+    "redistribution": "restricted"
+  },
+  "access": {
+    "gated": "no",
+    "authentication_required": "no",
+    "expected_bytes": 851461
+  },
+  "content": {
+    "observed_bytes": 851461,
+    "sha256": "0634a38178ed96f0a7c232b90793b98f8ccdcd369b7df823be41ce8d5aec97dc"
+  },
+  "privacy": {
+    "real_minors": "no",
+    "faces": "yes",
+    "audio": "no",
+    "device_or_account_ids": "no",
+    "precise_timestamps": "yes",
+    "private_household_data": "no"
+  },
+  "labels": {
+    "origin": "publisher_description",
+    "human_verified": false,
+    "ground_truth": false
+  },
+  "admission": {
+    "tier": "B",
+    "status": "verified_local",
+    "purpose": "model_evaluation",
+    "requires_user_approval": true,
+    "user_approval_recorded": true,
+    "git_allowed": false,
+    "ci_allowed": false,
+    "redistribution_allowed": false,
+    "training_allowed": false,
+    "reviewed_on": "2026-08-11",
+    "blocker_codes": [],
+    "restriction_codes": [
+      "adult_identifiable_face",
+      "local_only",
+      "nasa_attribution_required",
+      "no_training",
+      "precise_timestamp",
+      "publicity_rights_restricted"
+    ]
+  }
+}

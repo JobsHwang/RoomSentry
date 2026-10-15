@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "camera_id": "fixture_pose_cam",
+  "pose_adapter": "fixture_pose_v1",
+  "model_id": "fixture_pose",
+  "model_revision": "fixture-v1",
+  "model_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "pose_batch_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "config": {
+    "version": 1,
+    "keypoint_confidence_threshold": 0.5,
+    "min_usable_keypoints": 8,
+    "min_pair_bbox_iou": 0.2,
+    "min_shared_keypoints": 8,
+    "image_change_threshold": 0.05,
+    "shape_change_threshold": 0.05
+  },
+  "frames": [
+    {
+      "frame_id": "f000001",
+      "timestamp_seconds": 0.0,
+      "pose_count": 0,
+      "usable_pose_count": 0,
+      "in_frame_keypoint_count": 0,
+      "high_confidence_keypoint_count": 0
+    }
+  ],
+  "transitions": [],
+  "summary": {
+    "evidence_status": "no_pose_evidence",
+    "frame_count": 1,
+    "pose_count": 0,
+    "usable_pose_count": 0,
+    "frames_with_poses": 0,
+    "frames_with_usable_poses": 0,
+    "usable_pose_rate": null,
+    "transition_count": 0,
+    "matched_pose_pairs": 0,
+    "comparable_pose_pairs": 0,
+    "insufficient_shared_keypoint_pairs": 0,
+    "temporal_comparability_rate": null,
+    "image_change_pairs": 0,
+    "shape_change_pairs": 0,
+    "image_displacement_median": null,
+    "image_displacement_p95": null,
+    "shape_displacement_median": null,
+    "shape_displacement_p95": null
+  },
+  "anonymous_pairing_only": true,
+  "subject_identity_inference": false,
+  "posture_classification": false,
+  "risk_inference": false,
+  "source_media_included": false,
+  "paths_disclosed": false
+}

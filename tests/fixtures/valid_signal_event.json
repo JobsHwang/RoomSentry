@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "signal_id": "fixture_signal_01",
+  "camera_id": "cam_01",
+  "occurred_at": "2026-08-03T01:02:03+00:00",
+  "signal_type": "hardware_cry",
+  "source_adapter": "fixture_adapter",
+  "confidence": 0.91,
+  "attributes": {
+    "channel": "main",
+    "duration_ms": 1500,
+    "severity_hint": "medium"
+  }
+}

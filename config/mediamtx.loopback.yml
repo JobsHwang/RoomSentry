@@ -1,0 +1,21 @@
+# Tested with MediaMTX v1.19.3. The stream router is deliberately local-only.
+logLevel: info
+logDestinations: [stdout]
+
+api: false
+metrics: false
+pprof: false
+playback: false
+
+rtsp: true
+rtspTransports: [tcp]
+rtspAddress: 127.0.0.1:8554
+
+rtmp: false
+hls: false
+webrtc: false
+srt: false
+
+paths:
+  all_others:
+    source: publisher

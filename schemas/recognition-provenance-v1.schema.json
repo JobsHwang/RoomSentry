@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/recognition-provenance-v1.schema.json",
+  "title": "RecognitionProvenance v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "adapter_name",
+    "model_revision",
+    "prompt_revision",
+    "output_schema_revision"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "adapter_name": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "model_revision": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+        },
+        {"type": "null"}
+      ]
+    },
+    "prompt_revision": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "output_schema_revision": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    }
+  }
+}

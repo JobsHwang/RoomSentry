@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Tracker Disagreement Review v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "detection_batch_sha256",
+    "comparison_sha256",
+    "left_prediction_sha256",
+    "right_prediction_sha256",
+    "review_status",
+    "links",
+    "reviews",
+    "human_labels",
+    "scope",
+    "model_generated_labels",
+    "source_media_included",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "detection_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "comparison_sha256": {"$ref": "#/$defs/sha256"},
+    "left_prediction_sha256": {"$ref": "#/$defs/sha256"},
+    "right_prediction_sha256": {"$ref": "#/$defs/sha256"},
+    "review_status": {"enum": ["pending", "approved"]},
+    "links": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {"$ref": "#/$defs/linkReview"}
+    },
+    "reviews": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/reviewer"}
+    },
+    "human_labels": {"type": "boolean"},
+    "scope": {"const": "pairwise_disagreement_links"},
+    "model_generated_labels": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+    },
+    "reviewerId": {
+      "type": "string",
+      "pattern": "^reviewer_[A-Za-z0-9_.-]{1,64}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "linkReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "link_id",
+        "previous_frame_id",
+        "previous_detection_id",
+        "current_frame_id",
+        "current_detection_id",
+        "proposed_by",
+        "link_kind",
+        "review_state"
+      ],
+      "properties": {
+        "link_id": {"$ref": "#/$defs/id"},
+        "previous_frame_id": {"$ref": "#/$defs/id"},
+        "previous_detection_id": {"$ref": "#/$defs/id"},
+        "current_frame_id": {"$ref": "#/$defs/id"},
+        "current_detection_id": {"$ref": "#/$defs/id"},
+        "proposed_by": {"enum": ["left", "right"]},
+        "link_kind": {"enum": ["continuous", "recovery"]},
+        "review_state": {
+          "enum": [
+            "pending",
+            "same_subject",
+            "different_subject",
+            "unreviewable"
+          ]
+        }
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "reviewed_at", "verdict"],
+      "properties": {
+        "reviewer_id": {"$ref": "#/$defs/reviewerId"},
+        "reviewed_at": {"type": "string", "format": "date-time"},
+        "verdict": {"const": "approve"}
+      }
+    }
+  }
+}

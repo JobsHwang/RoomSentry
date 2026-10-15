@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baby-monitor.local/schemas/daily-digest-plan-v1.schema.json",
+  "title": "DailyDigestPlan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version", "digest_id", "local_date", "timezone", "selector_id", "revision",
+    "config_sha256", "target_duration_seconds", "source_event_count",
+    "selected_event_count", "selected_duration_seconds", "target_met", "coverage", "items",
+    "facts_only", "identity_inference", "risk_inference", "paths_disclosed",
+    "notification_decision", "media_read", "video_generated"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "digest_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "local_date": {"type": "string", "format": "date"},
+    "timezone": {"type": "string", "minLength": 1, "maxLength": 80},
+    "selector_id": {"const": "deterministic_facts_v1"},
+    "revision": {"const": "2026-08-19"},
+    "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_duration_seconds": {"type": "number", "minimum": 2, "maximum": 600},
+    "source_event_count": {"type": "integer", "minimum": 0, "maximum": 10000},
+    "selected_event_count": {"type": "integer", "minimum": 0, "maximum": 60},
+    "selected_duration_seconds": {"type": "number", "minimum": 0, "maximum": 600},
+    "target_met": {"type": "boolean"},
+    "coverage": {"$ref": "#/$defs/coverage"},
+    "items": {"type": "array", "maxItems": 60, "items": {"$ref": "#/$defs/item"}},
+    "facts_only": {"const": true},
+    "identity_inference": {"const": false},
+    "risk_inference": {"const": false},
+    "paths_disclosed": {"const": false},
+    "notification_decision": {"const": false},
+    "media_read": {"const": false},
+    "video_generated": {"const": false}
+  },
+  "$defs": {
+    "countMap": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[A-Za-z0-9_.:-]{1,128}$"},
+      "additionalProperties": {"type": "integer", "minimum": 1, "maximum": 10000}
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_by_camera", "selected_by_camera", "source_by_hour", "selected_by_hour",
+        "gap_reason_counts"
+      ],
+      "properties": {
+        "source_by_camera": {"$ref": "#/$defs/countMap"},
+        "selected_by_camera": {"$ref": "#/$defs/countMap"},
+        "source_by_hour": {"$ref": "#/$defs/countMap"},
+        "selected_by_hour": {"$ref": "#/$defs/countMap"},
+        "gap_reason_counts": {"$ref": "#/$defs/countMap"}
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id", "camera_id", "occurred_at", "source_binding_sha256",
+        "clip_start_seconds", "clip_end_seconds", "duration_seconds", "selection_score",
+        "score_components", "selection_reasons", "rank"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "pattern": "^[A-Za-z0-9_.:-]{1,128}$"},
+        "camera_id": {"type": "string", "pattern": "^[A-Za-z0-9_.:-]{1,128}$"},
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "source_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "clip_start_seconds": {"type": "number", "minimum": 0, "maximum": 3600},
+        "clip_end_seconds": {"type": "number", "exclusiveMinimum": 0, "maximum": 3600},
+        "duration_seconds": {"type": "number", "exclusiveMinimum": 0, "maximum": 60},
+        "selection_score": {"type": "number", "minimum": 0, "maximum": 1},
+        "score_components": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "event_recorded", "human_keep", "person_fact", "motion_fact",
+            "hardware_signal", "zone_signal", "risk_field", "coverage_complete"
+          ],
+          "properties": {
+            "event_recorded": {"type": "number", "minimum": 0, "maximum": 1},
+            "human_keep": {"type": "number", "minimum": 0, "maximum": 1},
+            "person_fact": {"type": "number", "minimum": 0, "maximum": 1},
+            "motion_fact": {"type": "number", "minimum": 0, "maximum": 1},
+            "hardware_signal": {"type": "number", "minimum": 0, "maximum": 1},
+            "zone_signal": {"type": "number", "minimum": 0, "maximum": 1},
+            "risk_field": {"type": "number", "minimum": 0, "maximum": 1},
+            "coverage_complete": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        "selection_reasons": {
+          "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true,
+          "items": {
+            "enum": [
+              "event_recorded", "human_keep", "person_fact", "motion_fact",
+              "hardware_signal", "zone_signal", "risk_field", "coverage_complete"
+            ]
+          }
+        },
+        "rank": {"type": "integer", "minimum": 1, "maximum": 60}
+      }
+    }
+  },
+  "$comment": "The canonical Python contract additionally checks local-day membership, unique event IDs, quota selection, score arithmetic, clip window ordering, rank continuity, duration sums, and digest/config hashes."
+}

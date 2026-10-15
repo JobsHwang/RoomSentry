@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor CandidateSoakStatus v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "session_count",
+    "latest",
+    "attention_required",
+    "media_read",
+    "paths_disclosed",
+    "identity_inference",
+    "risk_assessment",
+    "notification_authority"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "status": {"enum": ["not_initialized", "unavailable", "available"]},
+    "session_count": {"type": "integer", "minimum": 0, "maximum": 32},
+    "latest": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/latest"}
+      ]
+    },
+    "attention_required": {"type": "boolean"},
+    "media_read": {"const": false},
+    "paths_disclosed": {"const": false},
+    "identity_inference": {"const": false},
+    "risk_assessment": {"const": false},
+    "notification_authority": {"const": false}
+  },
+  "$defs": {
+    "counter": {"type": "integer", "minimum": 0, "maximum": 1000000000},
+    "nullableDuration": {
+      "oneOf": [
+        {"type": "number", "minimum": 0, "maximum": 604800},
+        {"type": "null"}
+      ]
+    },
+    "delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessions_started",
+        "sessions_stopped",
+        "sessions_failed",
+        "unclean_restarts",
+        "scans_succeeded",
+        "scans_failed",
+        "candidate_groups_emitted",
+        "candidate_groups_suppressed",
+        "scan_duration_sample_count",
+        "execution_lock_wait_sample_count",
+        "scan_duration_p95_upper_bound_seconds",
+        "scan_duration_max_upper_bound_seconds",
+        "execution_lock_wait_p95_upper_bound_seconds",
+        "execution_lock_wait_max_upper_bound_seconds",
+        "approximate_percentile",
+        "media_read",
+        "paths_disclosed"
+      ],
+      "properties": {
+        "sessions_started": {"$ref": "#/$defs/counter"},
+        "sessions_stopped": {"$ref": "#/$defs/counter"},
+        "sessions_failed": {"$ref": "#/$defs/counter"},
+        "unclean_restarts": {"$ref": "#/$defs/counter"},
+        "scans_succeeded": {"$ref": "#/$defs/counter"},
+        "scans_failed": {"$ref": "#/$defs/counter"},
+        "candidate_groups_emitted": {"$ref": "#/$defs/counter"},
+        "candidate_groups_suppressed": {"$ref": "#/$defs/counter"},
+        "scan_duration_sample_count": {"$ref": "#/$defs/counter"},
+        "execution_lock_wait_sample_count": {"$ref": "#/$defs/counter"},
+        "scan_duration_p95_upper_bound_seconds": {"$ref": "#/$defs/nullableDuration"},
+        "scan_duration_max_upper_bound_seconds": {"$ref": "#/$defs/nullableDuration"},
+        "execution_lock_wait_p95_upper_bound_seconds": {"$ref": "#/$defs/nullableDuration"},
+        "execution_lock_wait_max_upper_bound_seconds": {"$ref": "#/$defs/nullableDuration"},
+        "approximate_percentile": {"const": true},
+        "media_read": {"const": false},
+        "paths_disclosed": {"const": false}
+      }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["camera_id", "result"],
+      "properties": {
+        "camera_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "result": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/delta"}
+          ]
+        }
+      }
+    },
+    "latest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "started_at",
+        "ended_at",
+        "elapsed_seconds",
+        "expected_duration_seconds",
+        "camera_count",
+        "attention_required",
+        "cameras",
+        "scans_succeeded",
+        "scans_failed",
+        "candidate_groups_emitted",
+        "candidate_groups_suppressed",
+        "sessions_failed",
+        "unclean_restarts"
+      ],
+      "properties": {
+        "state": {"enum": ["running", "completed", "stopped_early", "interrupted"]},
+        "started_at": {"type": "string", "format": "date-time"},
+        "ended_at": {
+          "oneOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "elapsed_seconds": {"type": "number", "minimum": 0},
+        "expected_duration_seconds": {"type": "integer", "minimum": 60, "maximum": 604800},
+        "camera_count": {"type": "integer", "minimum": 1, "maximum": 16},
+        "attention_required": {"type": "boolean"},
+        "cameras": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/camera"}
+        },
+        "scans_succeeded": {"$ref": "#/$defs/counter"},
+        "scans_failed": {"$ref": "#/$defs/counter"},
+        "candidate_groups_emitted": {"$ref": "#/$defs/counter"},
+        "candidate_groups_suppressed": {"$ref": "#/$defs/counter"},
+        "sessions_failed": {"$ref": "#/$defs/counter"},
+        "unclean_restarts": {"$ref": "#/$defs/counter"}
+      }
+    }
+  },
+  "$comment": "Camera uniqueness, aggregate sums, running/result combinations and attention semantics remain enforced by the canonical Python parser."
+}

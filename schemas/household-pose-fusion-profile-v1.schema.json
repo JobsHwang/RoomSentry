@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/household-pose-fusion-profile-v1.schema.json",
+  "title": "Baby Monitor HouseholdPoseFusionProfile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile_id",
+    "cameras",
+    "version",
+    "label",
+    "fusion_operator",
+    "selection_provenance",
+    "profile_selected_on_evaluation_data",
+    "diagnostic_only",
+    "deployment_approved",
+    "household_configuration_changed",
+    "subject_identity_inference",
+    "posture_classification",
+    "paths_disclosed",
+    "profile_sha256"
+  ],
+  "properties": {
+    "profile_id": {"$ref": "#/$defs/id"},
+    "cameras": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/cameraProfile"}
+    },
+    "version": {"const": 1},
+    "label": {"const": "person"},
+    "fusion_operator": {"const": "detector_or_gated_pose"},
+    "selection_provenance": {"const": "same_household_model_generated_review"},
+    "profile_selected_on_evaluation_data": {"const": true},
+    "diagnostic_only": {"const": true},
+    "deployment_approved": {"const": false},
+    "household_configuration_changed": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "posture_classification": {"const": false},
+    "paths_disclosed": {"const": false},
+    "profile_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "holdSeconds": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 300
+    },
+    "cameraProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "camera_id",
+        "detector_confidence_threshold",
+        "detector_hold_seconds",
+        "pose_enabled",
+        "pose_confidence_threshold",
+        "pose_hold_seconds",
+        "minimum_pose_bbox_area",
+        "minimum_pose_bbox_height",
+        "keypoint_confidence_threshold",
+        "minimum_keypoint_count"
+      ],
+      "properties": {
+        "camera_id": {"$ref": "#/$defs/id"},
+        "detector_confidence_threshold": {"$ref": "#/$defs/ratio"},
+        "detector_hold_seconds": {"$ref": "#/$defs/holdSeconds"},
+        "pose_enabled": {"type": "boolean"},
+        "pose_confidence_threshold": {"$ref": "#/$defs/ratio"},
+        "pose_hold_seconds": {"$ref": "#/$defs/holdSeconds"},
+        "minimum_pose_bbox_area": {"$ref": "#/$defs/ratio"},
+        "minimum_pose_bbox_height": {"$ref": "#/$defs/ratio"},
+        "keypoint_confidence_threshold": {"$ref": "#/$defs/ratio"},
+        "minimum_keypoint_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 17
+        }
+      }
+    }
+  }
+}

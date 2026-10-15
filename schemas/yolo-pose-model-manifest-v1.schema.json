@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor YOLO Pose Model Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "backend",
+    "model_id",
+    "revision",
+    "filename",
+    "sha256",
+    "size_bytes",
+    "source_url",
+    "license_spdx",
+    "license_url",
+    "class_name",
+    "keypoint_names",
+    "keypoint_dimensions",
+    "pickle_checkpoint",
+    "subject_identity_inference",
+    "posture_classification"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "backend": {"const": "ultralytics_yolo_pose"},
+    "model_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,128}$"},
+    "revision": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,128}$"},
+    "filename": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,199}$"
+    },
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "size_bytes": {"type": "integer", "minimum": 1, "maximum": 4294967296},
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[^?#]+$",
+      "maxLength": 2048
+    },
+    "license_spdx": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9.+-]{0,79}$"
+    },
+    "license_url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[^?#]+$",
+      "maxLength": 2048
+    },
+    "class_name": {"const": "person"},
+    "keypoint_names": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "nose"},
+        {"const": "left_eye"},
+        {"const": "right_eye"},
+        {"const": "left_ear"},
+        {"const": "right_ear"},
+        {"const": "left_shoulder"},
+        {"const": "right_shoulder"},
+        {"const": "left_elbow"},
+        {"const": "right_elbow"},
+        {"const": "left_wrist"},
+        {"const": "right_wrist"},
+        {"const": "left_hip"},
+        {"const": "right_hip"},
+        {"const": "left_knee"},
+        {"const": "right_knee"},
+        {"const": "left_ankle"},
+        {"const": "right_ankle"}
+      ],
+      "items": false,
+      "minItems": 17,
+      "maxItems": 17
+    },
+    "keypoint_dimensions": {"const": 3},
+    "pickle_checkpoint": {"const": true},
+    "subject_identity_inference": {"const": false},
+    "posture_classification": {"const": false}
+  }
+}

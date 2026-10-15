@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Tracker Association Review v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "camera_id",
+    "detector_adapter",
+    "detection_batch_sha256",
+    "source_admission_sha256",
+    "review_status",
+    "assignments",
+    "reviews",
+    "human_labels",
+    "ground_truth_provenance",
+    "scope",
+    "identity_semantics",
+    "model_generated_labels",
+    "source_media_included",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "camera_id": {"$ref": "#/$defs/id"},
+    "detector_adapter": {"$ref": "#/$defs/id"},
+    "detection_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "source_admission_sha256": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/sha256"}
+      ]
+    },
+    "review_status": {"enum": ["pending", "approved"]},
+    "assignments": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/assignment"}
+    },
+    "reviews": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/reviewer"}
+    },
+    "human_labels": {"type": "boolean"},
+    "ground_truth_provenance": {
+      "enum": ["admitted_publisher_human", "local_human_review"]
+    },
+    "scope": {"const": "association_on_detector_boxes"},
+    "identity_semantics": {"const": "anonymous_within_review"},
+    "model_generated_labels": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+    },
+    "subjectId": {
+      "type": "string",
+      "pattern": "^subject_[A-Za-z0-9_.-]{1,64}$"
+    },
+    "reviewerId": {
+      "type": "string",
+      "pattern": "^reviewer_[A-Za-z0-9_.-]{1,64}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame_id", "detection_id", "review_state", "subject_id"],
+      "properties": {
+        "frame_id": {"$ref": "#/$defs/id"},
+        "detection_id": {"$ref": "#/$defs/id"},
+        "review_state": {
+          "enum": [
+            "assigned",
+            "duplicate",
+            "false_positive",
+            "pending",
+            "unreviewable"
+          ]
+        },
+        "subject_id": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/subjectId"}
+          ]
+        }
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "reviewed_at", "verdict"],
+      "properties": {
+        "reviewer_id": {"$ref": "#/$defs/reviewerId"},
+        "reviewed_at": {"type": "string", "format": "date-time"},
+        "verdict": {"const": "approve"}
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor MediaSourceHealth v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "camera_id",
+    "source_ref",
+    "state",
+    "observed_at",
+    "session_started_at",
+    "session_ended_at",
+    "segments",
+    "coverage_seconds",
+    "gap_count",
+    "reconnect_count",
+    "capacity_reached",
+    "ffmpeg_exit_code",
+    "last_error_code"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "camera_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "source_ref": {"type": "string", "pattern": "^rtsp://"},
+    "state": {
+      "enum": [
+        "starting",
+        "running",
+        "degraded",
+        "stopped",
+        "capacity_reached",
+        "failed"
+      ]
+    },
+    "observed_at": {"type": "string", "format": "date-time"},
+    "session_started_at": {"type": "string", "format": "date-time"},
+    "session_ended_at": {
+      "oneOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    },
+    "segments": {"type": "integer", "minimum": 0, "maximum": 10000000},
+    "coverage_seconds": {"type": "number", "minimum": 0},
+    "gap_count": {"type": "integer", "minimum": 0, "maximum": 10000000},
+    "reconnect_count": {"type": "integer", "minimum": 0, "maximum": 10000000},
+    "capacity_reached": {"type": "boolean"},
+    "ffmpeg_exit_code": {"type": ["integer", "null"]},
+    "last_error_code": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        {"type": "null"}
+      ]
+    }
+  }
+}

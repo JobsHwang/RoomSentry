@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor AdmittedPoseScan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "source_admission_sha256",
+    "confidence_threshold",
+    "requested_sample_fps",
+    "requested_max_frames",
+    "image_size",
+    "rotation_degrees",
+    "result"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "source_admission_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "confidence_threshold": {"type": "number", "minimum": 0, "maximum": 1},
+    "requested_sample_fps": {"type": "number", "minimum": 0.01, "maximum": 10},
+    "requested_max_frames": {"type": "integer", "minimum": 1, "maximum": 10000},
+    "image_size": {
+      "type": "integer",
+      "minimum": 320,
+      "maximum": 1280,
+      "multipleOf": 32
+    },
+    "rotation_degrees": {"enum": [0, 90, 180, 270]},
+    "result": {"$ref": "pose-frame-batch-v1.schema.json"}
+  }
+}

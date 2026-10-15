@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/trusted-model-code-manifest-v1.schema.json",
+  "title": "Trusted local model code manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "model_id", "revision", "files"],
+  "properties": {
+    "version": {"const": 1},
+    "model_id": {"const": "microsoft/Mage-VL"},
+    "revision": {"const": "5c78cab61938e73859b63724d9bf5cb88c477eaa"},
+    "files": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "allOf": [
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "chat_template.jinja"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "codec_video_processing_mage_vl.py"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "config.json"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "configuration_mage_vl.py"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "modeling_mage_vl.py"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "preprocessor_config.json"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "processing_mage_vl.py"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "video_preprocessor_config.json"}}}},
+        {"contains": {"type": "object", "required": ["path"], "properties": {"path": {"const": "video_processing_mage_vl.py"}}}}
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "size", "sha256"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "maxLength": 160,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,159}\\.(py|json|jinja)$"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 33554432
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

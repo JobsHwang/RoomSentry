@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/home-assistant-signal-map-v1.schema.json",
+  "title": "Home Assistant to SignalEvent mapping v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "source_adapter", "mappings"],
+  "properties": {
+    "version": {"const": 1},
+    "source_adapter": {"const": "home_assistant"},
+    "mappings": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "entity_id",
+          "camera_id",
+          "signal_type",
+          "confidence",
+          "trigger",
+          "active_states",
+          "required_event_type",
+          "attributes"
+        ],
+        "properties": {
+          "entity_id": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 255,
+            "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+$"
+          },
+          "camera_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+          },
+          "signal_type": {
+            "enum": [
+              "motion",
+              "person",
+              "face",
+              "sound_peak",
+              "hardware_cry",
+              "zone_enter",
+              "zone_dwell",
+              "zone_exit",
+              "fall_hint",
+              "manual_trigger"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "trigger": {"enum": ["rising_edge", "state_change"]},
+          "active_states": {
+            "type": "array",
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[!-~]+$"
+            }
+          },
+          "required_event_type": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "attributes": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "channel": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+              "direction": {"enum": ["enter", "exit", "unknown"]},
+              "duration_ms": {"type": "integer", "minimum": 0, "maximum": 86400000},
+              "object_label": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+              "severity_hint": {"enum": ["none", "low", "medium", "high"]},
+              "tracking_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+              "zone_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"}
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"trigger": {"const": "rising_edge"}}},
+            "then": {"properties": {"active_states": {"minItems": 1}}}
+          },
+          {
+            "if": {"properties": {"trigger": {"const": "state_change"}}},
+            "then": {"properties": {"active_states": {"maxItems": 0}}}
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "signal_camera_id": "ha_camera_01",
+      "camera_id": "camera_01",
+      "manifest_path": "/absolute/private/buffer/camera_01/manifest.json"
+    }
+  ]
+}

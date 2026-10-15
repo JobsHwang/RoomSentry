@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "risk_level": "none",
+  "review_tier": "local_secondary",
+  "review_reasons": [
+    "repeated_signal_window"
+  ],
+  "contradictions": [],
+  "remote_allowed": false,
+  "remote_used": false,
+  "final_source": "local_primary",
+  "signal_frequency_count": 3,
+  "signal_frequency_window_seconds": 600,
+  "frequent_signal_types": [
+    "motion"
+  ]
+}

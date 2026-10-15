@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "kind": "webhook",
+  "sink_id": "family_chat",
+  "url": "https://example.invalid/replace-in-private-copy",
+  "headers": {
+    "Authorization": "Bearer replace-in-private-copy"
+  },
+  "timeout_seconds": 15
+}

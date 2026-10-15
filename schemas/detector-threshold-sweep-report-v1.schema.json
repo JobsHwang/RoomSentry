@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/detector-threshold-sweep-report-v1.schema.json",
+  "title": "Baby Monitor DetectorThresholdSweepReport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "ground_truth_batch_sha256",
+    "ground_truth_review_sha256",
+    "ground_truth_admission_sha256",
+    "media_admission_sha256",
+    "detector_scan_sha256",
+    "camera_id",
+    "detector_adapter",
+    "model_id",
+    "model_revision",
+    "model_sha256",
+    "label",
+    "source_confidence_threshold",
+    "requested_sample_fps",
+    "source_fps",
+    "effective_sample_fps",
+    "source_frame_count",
+    "annotation_frame_count",
+    "annotation_frame_offset",
+    "evaluated_frame_count",
+    "ground_truth_box_count",
+    "iou_threshold",
+    "points",
+    "best_f1_threshold",
+    "best_f1",
+    "selection_rule",
+    "ground_truth_provenance",
+    "frame_alignment_confirmed",
+    "derived_without_model_rerun",
+    "detection_accuracy_evaluated",
+    "subject_identity_inference",
+    "age_role_inference",
+    "source_media_included",
+    "paths_disclosed",
+    "report_sha256"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "ground_truth_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "ground_truth_review_sha256": {"$ref": "#/$defs/sha256"},
+    "ground_truth_admission_sha256": {"$ref": "#/$defs/sha256"},
+    "media_admission_sha256": {"$ref": "#/$defs/sha256"},
+    "detector_scan_sha256": {"$ref": "#/$defs/sha256"},
+    "camera_id": {"$ref": "#/$defs/id"},
+    "detector_adapter": {"$ref": "#/$defs/id"},
+    "model_id": {"$ref": "#/$defs/id"},
+    "model_revision": {"$ref": "#/$defs/id"},
+    "model_sha256": {"$ref": "#/$defs/sha256"},
+    "label": {"const": "person"},
+    "source_confidence_threshold": {"$ref": "#/$defs/ratio"},
+    "requested_sample_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 10
+    },
+    "source_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 240
+    },
+    "effective_sample_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 240
+    },
+    "source_frame_count": {"$ref": "#/$defs/positiveCount"},
+    "annotation_frame_count": {"$ref": "#/$defs/positiveCount"},
+    "annotation_frame_offset": {"$ref": "#/$defs/count"},
+    "evaluated_frame_count": {"$ref": "#/$defs/positiveCount"},
+    "ground_truth_box_count": {"$ref": "#/$defs/positiveCount"},
+    "iou_threshold": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 1
+    },
+    "points": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/point"}
+    },
+    "best_f1_threshold": {"$ref": "#/$defs/optionalRatio"},
+    "best_f1": {"$ref": "#/$defs/optionalRatio"},
+    "selection_rule": {
+      "const": "max_f1_then_recall_then_precision_then_lower_threshold"
+    },
+    "ground_truth_provenance": {"const": "admitted_publisher_human"},
+    "frame_alignment_confirmed": {"const": true},
+    "derived_without_model_rerun": {"const": true},
+    "detection_accuracy_evaluated": {"const": true},
+    "subject_identity_inference": {"const": false},
+    "age_role_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false},
+    "report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "positiveCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "optionalRatio": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/ratio"}
+      ]
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confidence_threshold",
+        "detector_box_count",
+        "matched_box_count",
+        "missed_ground_truth_box_count",
+        "false_positive_box_count",
+        "precision",
+        "recall",
+        "f1",
+        "mean_matched_iou",
+        "longest_consecutive_subject_miss_samples",
+        "longest_consecutive_subject_miss_seconds"
+      ],
+      "properties": {
+        "confidence_threshold": {"$ref": "#/$defs/ratio"},
+        "detector_box_count": {"$ref": "#/$defs/count"},
+        "matched_box_count": {"$ref": "#/$defs/count"},
+        "missed_ground_truth_box_count": {"$ref": "#/$defs/count"},
+        "false_positive_box_count": {"$ref": "#/$defs/count"},
+        "precision": {"$ref": "#/$defs/optionalRatio"},
+        "recall": {"$ref": "#/$defs/optionalRatio"},
+        "f1": {"$ref": "#/$defs/optionalRatio"},
+        "mean_matched_iou": {"$ref": "#/$defs/optionalRatio"},
+        "longest_consecutive_subject_miss_samples": {"$ref": "#/$defs/count"},
+        "longest_consecutive_subject_miss_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        }
+      }
+    }
+  }
+}

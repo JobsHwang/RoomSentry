@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Household VLM Review Case v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "review_status",
+    "case_id",
+    "frames",
+    "question",
+    "expected",
+    "reviews"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "review_status": {
+      "enum": ["pending", "approved", "needs_second_review", "disputed"]
+    },
+    "case_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {"$ref": "#/$defs/frame"}
+    },
+    "question": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "expected": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/expected"}
+      ]
+    },
+    "reviews": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/review"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"review_status": {"const": "pending"}}},
+      "then": {"properties": {"expected": {"type": "null"}, "reviews": {"maxItems": 0}}}
+    },
+    {
+      "if": {"properties": {"review_status": {"const": "approved"}}},
+      "then": {
+        "properties": {
+          "expected": {"$ref": "#/$defs/expected"},
+          "reviews": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"review_status": {"const": "needs_second_review"}}},
+      "then": {
+        "properties": {
+          "expected": {"$ref": "#/$defs/expected"},
+          "reviews": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"review_status": {"const": "disputed"}}},
+      "then": {"properties": {"reviews": {"minItems": 2}}}
+    }
+  ],
+  "$defs": {
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame_id", "path", "sha256"],
+      "properties": {
+        "frame_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "path": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_id", "verdict", "reviewed_at"],
+      "properties": {
+        "reviewer_id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$"},
+        "verdict": {"enum": ["approve", "reject"]},
+        "reviewed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_type",
+        "risk_level",
+        "allowed_subjects",
+        "allowed_observations",
+        "allowed_inferences",
+        "required_observation_groups",
+        "required_inference_groups"
+      ],
+      "properties": {
+        "event_type": {
+          "enum": [
+            "sleeping",
+            "awake",
+            "crying",
+            "movement",
+            "adult_interaction",
+            "possible_risk",
+            "unknown"
+          ]
+        },
+        "risk_level": {"enum": ["none", "low", "medium", "high"]},
+        "allowed_subjects": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 5,
+          "items": {"enum": ["baby", "adult", "person", "pet", "unknown"]}
+        },
+        "allowed_observations": {"$ref": "#/$defs/stringList"},
+        "allowed_inferences": {"$ref": "#/$defs/stringList"},
+        "required_observation_groups": {"$ref": "#/$defs/stringGroups"},
+        "required_inference_groups": {"$ref": "#/$defs/stringGroups"}
+      }
+    },
+    "stringList": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
+    },
+    "stringGroups": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 20,
+        "uniqueItems": true,
+        "items": {"type": "string", "minLength": 1, "maxLength": 500}
+      }
+    }
+  }
+}

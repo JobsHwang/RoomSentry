@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/resident-visual-predicate-health-v1.schema.json",
+  "title": "Resident Visual Predicate Health v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "checked_at",
+    "state",
+    "worker_running",
+    "worker_starts",
+    "worker_restarts",
+    "successful_jobs",
+    "failed_jobs",
+    "timeout_jobs",
+    "current_worker_jobs",
+    "max_jobs",
+    "idle_exit_seconds",
+    "max_runtime_seconds",
+    "model_id",
+    "model_revision",
+    "prompt_version",
+    "last_error_code",
+    "paths_disclosed",
+    "media_metadata_included"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "state": {
+      "enum": ["stopped", "starting", "ready", "busy", "failed"]
+    },
+    "worker_running": { "type": "boolean" },
+    "worker_starts": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "worker_restarts": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "successful_jobs": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "failed_jobs": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "timeout_jobs": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+    "current_worker_jobs": { "type": "integer", "minimum": 0, "maximum": 256 },
+    "max_jobs": { "type": "integer", "minimum": 1, "maximum": 256 },
+    "idle_exit_seconds": { "type": "number", "minimum": 1, "maximum": 3600 },
+    "max_runtime_seconds": { "type": "number", "minimum": 1, "maximum": 86400 },
+    "model_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "model_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "prompt_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+    },
+    "last_error_code": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+        }
+      ]
+    },
+    "paths_disclosed": { "const": false },
+    "media_metadata_included": { "const": false }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "state": { "enum": ["stopped", "failed"] } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "worker_running": { "const": false },
+          "current_worker_jobs": { "const": 0 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "state": { "enum": ["ready", "busy"] } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": { "worker_running": { "const": true } }
+      }
+    }
+  ],
+  "$comment": "The canonical Python parser additionally enforces restart/start equality, timeout<=failed, current_worker_jobs<=max_jobs, timezone awareness, owner-only file admission, and state/worker consistency."
+}

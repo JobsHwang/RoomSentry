@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/release-audit-v1.schema.json",
+  "title": "Baby monitor release audit v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "source",
+    "tracked_files",
+    "scanned_text_files",
+    "total_bytes",
+    "max_file_bytes",
+    "violations",
+    "content_disclosed"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed"
+      ]
+    },
+    "source": {
+      "enum": [
+        "git_index",
+        "worktree"
+      ]
+    },
+    "tracked_files": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "untracked_files": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "scanned_text_files": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "max_file_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1073741824
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/violation"
+      }
+    },
+    "content_disclosed": {
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "const": "worktree"
+          }
+        },
+        "required": [
+          "source"
+        ]
+      },
+      "then": {
+        "required": [
+          "untracked_files"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "untracked_files"
+          ]
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "violation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "path",
+        "line"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "binary_file",
+            "credential_url",
+            "file_too_large",
+            "forbidden_extension",
+            "forbidden_path",
+            "machine_home_path",
+            "missing_worktree_file",
+            "password_assignment",
+            "private_key",
+            "provider_token",
+            "unsafe_path",
+            "unsupported_git_mode",
+            "unsupported_worktree_type",
+            "worktree_file_changed"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "line": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Baby Monitor Event Policy Cascade Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policy_sha256",
+    "package_id",
+    "policy_enabled",
+    "input_sha256",
+    "case_count",
+    "routed_count",
+    "suppressed_counts",
+    "outcomes",
+    "items",
+    "version",
+    "offline_replay_only",
+    "facts_modified",
+    "risk_inference",
+    "review_decision_authority",
+    "notification_delivery_authority",
+    "delivery_performed",
+    "runtime_state_read",
+    "source_media_read",
+    "source_media_included",
+    "notification_outbox_written",
+    "network_used",
+    "subject_identity_inference",
+    "paths_disclosed",
+    "report_sha256"
+  ],
+  "properties": {
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "package_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "policy_enabled": {"type": "boolean"},
+    "input_sha256": {"$ref": "#/$defs/sha256"},
+    "case_count": {"type": "integer", "minimum": 1, "maximum": 1000},
+    "routed_count": {"type": "integer", "minimum": 0, "maximum": 1000},
+    "suppressed_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "policy_disabled": {"$ref": "#/$defs/positiveCount"},
+        "no_rule_match": {"$ref": "#/$defs/positiveCount"},
+        "quiet_hours": {"$ref": "#/$defs/positiveCount"},
+        "cooldown": {"$ref": "#/$defs/positiveCount"},
+        "aggregation_cap": {"$ref": "#/$defs/positiveCount"}
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/outcome"}
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "version": {"const": 1},
+    "offline_replay_only": {"const": true},
+    "facts_modified": {"const": false},
+    "risk_inference": {"const": false},
+    "review_decision_authority": {"const": false},
+    "notification_delivery_authority": {"const": false},
+    "delivery_performed": {"const": false},
+    "runtime_state_read": {"const": false},
+    "source_media_read": {"const": false},
+    "source_media_included": {"const": false},
+    "notification_outbox_written": {"const": false},
+    "network_used": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "paths_disclosed": {"const": false},
+    "report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "positiveCount": {"type": "integer", "minimum": 1, "maximum": 1000},
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case", "decision_sha256", "routing"],
+      "properties": {
+        "case": {
+          "$ref": "event-policy-cascade-input-v1.schema.json#/$defs/case"
+        },
+        "decision_sha256": {"$ref": "#/$defs/sha256"},
+        "routing": {"$ref": "#/$defs/routing"}
+      }
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "action",
+        "rule_id",
+        "reason",
+        "sink_ids",
+        "local_only"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+        },
+        "action": {"enum": ["route", "suppress"]},
+        "rule_id": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[A-Za-z0-9_.-]{1,128}$"}
+          ]
+        },
+        "reason": {
+          "enum": [
+            "routed",
+            "policy_disabled",
+            "no_rule_match",
+            "quiet_hours",
+            "cooldown",
+            "aggregation_cap"
+          ]
+        },
+        "sink_ids": {
+          "type": "array",
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+          }
+        },
+        "local_only": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"action": {"const": "route"}}},
+          "then": {
+            "properties": {
+              "reason": {"const": "routed"},
+              "rule_id": {"type": "string"},
+              "sink_ids": {"minItems": 1}
+            }
+          },
+          "else": {
+            "properties": {
+              "reason": {
+                "enum": [
+                  "policy_disabled",
+                  "no_rule_match",
+                  "quiet_hours",
+                  "cooldown",
+                  "aggregation_cap"
+                ]
+              },
+              "sink_ids": {"maxItems": 0}
+            }
+          }
+        }
+      ]
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_status",
+        "review_tier",
+        "final_source",
+        "remote_used",
+        "has_contradictions",
+        "action",
+        "reason",
+        "count"
+      ],
+      "properties": {
+        "review_status": {"enum": ["final", "pending_review"]},
+        "review_tier": {
+          "enum": ["none", "local_primary", "local_secondary", "remote"]
+        },
+        "final_source": {
+          "enum": ["local_primary", "local_secondary", "remote"]
+        },
+        "remote_used": {"type": "boolean"},
+        "has_contradictions": {"type": "boolean"},
+        "action": {"enum": ["route", "suppress"]},
+        "reason": {
+          "enum": [
+            "routed",
+            "policy_disabled",
+            "no_rule_match",
+            "quiet_hours",
+            "cooldown",
+            "aggregation_cap"
+          ]
+        },
+        "count": {"$ref": "#/$defs/positiveCount"}
+      }
+    }
+  }
+}

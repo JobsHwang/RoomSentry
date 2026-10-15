@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/candidate-start-gate-sweep-report-v1.schema.json",
+  "title": "Baby Monitor CandidateStartGateSweepReport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "ground_truth_batch_sha256",
+    "ground_truth_review_sha256",
+    "ground_truth_admission_sha256",
+    "media_admission_sha256",
+    "detector_scan_sha256",
+    "camera_id",
+    "detector_adapter",
+    "model_id",
+    "model_revision",
+    "model_sha256",
+    "label",
+    "source_confidence_threshold",
+    "requested_sample_fps",
+    "source_fps",
+    "effective_sample_fps",
+    "source_frame_count",
+    "annotation_frame_count",
+    "annotation_frame_offset",
+    "evaluated_sample_count",
+    "positive_sample_count",
+    "negative_sample_count",
+    "ground_truth_episode_count",
+    "candidate_gap_seconds",
+    "max_event_span_seconds",
+    "validation_iou_threshold",
+    "points",
+    "ground_truth_provenance",
+    "grouping_rule",
+    "derived_without_model_rerun",
+    "candidate_trigger_coverage_evaluated",
+    "box_localization_accuracy_evaluated",
+    "risk_accuracy_evaluated",
+    "deployment_approved",
+    "subject_identity_inference",
+    "source_media_included",
+    "paths_disclosed",
+    "report_sha256"
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "ground_truth_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "ground_truth_review_sha256": {"$ref": "#/$defs/sha256"},
+    "ground_truth_admission_sha256": {"$ref": "#/$defs/sha256"},
+    "media_admission_sha256": {"$ref": "#/$defs/sha256"},
+    "detector_scan_sha256": {"$ref": "#/$defs/sha256"},
+    "camera_id": {"$ref": "#/$defs/id"},
+    "detector_adapter": {"$ref": "#/$defs/id"},
+    "model_id": {"$ref": "#/$defs/id"},
+    "model_revision": {"$ref": "#/$defs/id"},
+    "model_sha256": {"$ref": "#/$defs/sha256"},
+    "label": {"const": "person"},
+    "source_confidence_threshold": {"$ref": "#/$defs/ratio"},
+    "requested_sample_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 10
+    },
+    "source_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 240
+    },
+    "effective_sample_fps": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 240
+    },
+    "source_frame_count": {"$ref": "#/$defs/positiveCount"},
+    "annotation_frame_count": {"$ref": "#/$defs/positiveCount"},
+    "annotation_frame_offset": {"$ref": "#/$defs/count"},
+    "evaluated_sample_count": {"$ref": "#/$defs/positiveCount"},
+    "positive_sample_count": {"$ref": "#/$defs/positiveCount"},
+    "negative_sample_count": {"$ref": "#/$defs/count"},
+    "ground_truth_episode_count": {"$ref": "#/$defs/positiveCount"},
+    "candidate_gap_seconds": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 300
+    },
+    "max_event_span_seconds": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 300
+    },
+    "validation_iou_threshold": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 1
+    },
+    "points": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/point"}
+    },
+    "ground_truth_provenance": {"const": "admitted_publisher_human"},
+    "grouping_rule": {"const": "same_as_candidate_worker_gap_and_max_span"},
+    "derived_without_model_rerun": {"const": true},
+    "candidate_trigger_coverage_evaluated": {"const": true},
+    "box_localization_accuracy_evaluated": {"const": false},
+    "risk_accuracy_evaluated": {"const": false},
+    "deployment_approved": {"const": false},
+    "subject_identity_inference": {"const": false},
+    "source_media_included": {"const": false},
+    "paths_disclosed": {"const": false},
+    "report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "positiveCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "optionalRatio": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/ratio"}
+      ]
+    },
+    "optionalSeconds": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        }
+      ]
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_start_confidence",
+        "candidate_group_count",
+        "emitted_group_count",
+        "suppressed_group_count",
+        "emitted_groups_with_positive_sample",
+        "emitted_groups_without_positive_sample",
+        "covered_positive_sample_count",
+        "uncovered_positive_sample_count",
+        "positive_sample_recall",
+        "activated_negative_sample_count",
+        "negative_sample_false_activation_rate",
+        "covered_ground_truth_episode_count",
+        "missed_ground_truth_episode_count",
+        "ground_truth_episode_recall",
+        "maximum_detection_delay_seconds",
+        "longest_uncovered_positive_samples",
+        "longest_uncovered_positive_seconds"
+      ],
+      "properties": {
+        "candidate_start_confidence": {"$ref": "#/$defs/ratio"},
+        "candidate_group_count": {"$ref": "#/$defs/count"},
+        "emitted_group_count": {"$ref": "#/$defs/count"},
+        "suppressed_group_count": {"$ref": "#/$defs/count"},
+        "emitted_groups_with_positive_sample": {"$ref": "#/$defs/count"},
+        "emitted_groups_without_positive_sample": {"$ref": "#/$defs/count"},
+        "covered_positive_sample_count": {"$ref": "#/$defs/count"},
+        "uncovered_positive_sample_count": {"$ref": "#/$defs/count"},
+        "positive_sample_recall": {"$ref": "#/$defs/ratio"},
+        "activated_negative_sample_count": {"$ref": "#/$defs/count"},
+        "negative_sample_false_activation_rate": {
+          "$ref": "#/$defs/optionalRatio"
+        },
+        "covered_ground_truth_episode_count": {"$ref": "#/$defs/count"},
+        "missed_ground_truth_episode_count": {"$ref": "#/$defs/count"},
+        "ground_truth_episode_recall": {"$ref": "#/$defs/ratio"},
+        "maximum_detection_delay_seconds": {
+          "$ref": "#/$defs/optionalSeconds"
+        },
+        "longest_uncovered_positive_samples": {"$ref": "#/$defs/count"},
+        "longest_uncovered_positive_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,408 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/baby-monitor/runtime-status-v1.schema.json",
+  "title": "Baby monitor runtime status v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "checked_at",
+    "status",
+    "operational",
+    "attention_required",
+    "reason_codes",
+    "advisory_codes",
+    "media",
+    "queue",
+    "archive_queue",
+    "notification_queue",
+    "storage",
+    "analysis",
+    "safety",
+    "paths_disclosed"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["operational", "attention"] },
+    "operational": { "type": "boolean" },
+    "attention_required": { "type": "boolean" },
+    "reason_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "media_not_operational",
+          "queue_at_capacity",
+          "queue_failed_jobs",
+          "queue_missing_media",
+          "queue_pending_too_old",
+          "archive_queue_at_capacity",
+          "archive_failed_jobs",
+          "archive_pending_too_old",
+          "notification_disabled_with_backlog",
+          "notification_queue_at_capacity",
+          "notification_failed_jobs",
+          "notification_pending_too_old",
+          "storage_low_free_space"
+        ]
+      }
+    },
+    "advisory_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["analysis_deferred"] }
+    },
+    "media": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/media" }
+    },
+    "queue": { "$ref": "#/$defs/queue" },
+    "archive_queue": { "$ref": "#/$defs/archiveQueue" },
+    "notification_queue": { "$ref": "#/$defs/notificationQueue" },
+    "storage": { "$ref": "#/$defs/storage" },
+    "analysis": { "$ref": "#/$defs/analysis" },
+    "safety": { "$ref": "#/$defs/safety" },
+    "paths_disclosed": { "const": false }
+  },
+  "$defs": {
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "nullableNonNegativeNumber": {
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "type": "null" }
+      ]
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "camera_id",
+        "reported_state",
+        "freshness",
+        "checked_at",
+        "observed_at",
+        "age_seconds",
+        "stale_after_seconds",
+        "future_tolerance_seconds",
+        "operational",
+        "reason_code"
+      ],
+      "properties": {
+        "version": { "const": 1 },
+        "camera_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+        },
+        "reported_state": {
+          "enum": [
+            "starting",
+            "running",
+            "degraded",
+            "stopped",
+            "capacity_reached",
+            "failed"
+          ]
+        },
+        "freshness": { "enum": ["fresh", "stale", "terminal", "clock_skew"] },
+        "checked_at": { "type": "string", "format": "date-time" },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "age_seconds": { "type": "number" },
+        "stale_after_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "future_tolerance_seconds": { "type": "number", "minimum": 0 },
+        "operational": { "type": "boolean" },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,80}$"
+        }
+      }
+    },
+    "queue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "active",
+        "ready_pending",
+        "oldest_pending_age_seconds",
+        "queued_media_files",
+        "queued_media_bytes",
+        "missing_media_files",
+        "failed_error_counts",
+        "max_active",
+        "max_pending_age_seconds",
+        "healthy",
+        "reason_codes"
+      ],
+      "properties": {
+        "pending": { "$ref": "#/$defs/nonNegativeInteger" },
+        "running": { "$ref": "#/$defs/nonNegativeInteger" },
+        "completed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "failed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "active": { "$ref": "#/$defs/nonNegativeInteger" },
+        "ready_pending": { "$ref": "#/$defs/nonNegativeInteger" },
+        "oldest_pending_age_seconds": {
+          "$ref": "#/$defs/nullableNonNegativeNumber"
+        },
+        "queued_media_files": { "$ref": "#/$defs/nonNegativeInteger" },
+        "queued_media_bytes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "missing_media_files": { "$ref": "#/$defs/nonNegativeInteger" },
+        "failed_error_counts": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[A-Za-z0-9_.-]{1,80}$" },
+          "additionalProperties": { "$ref": "#/$defs/nonNegativeInteger" }
+        },
+        "max_active": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "max_pending_age_seconds": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 604800
+        },
+        "healthy": { "type": "boolean" },
+        "reason_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "queue_at_capacity",
+              "queue_failed_jobs",
+              "queue_missing_media",
+              "queue_pending_too_old"
+            ]
+          }
+        }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_bytes",
+        "used_bytes",
+        "free_bytes",
+        "free_percent",
+        "minimum_free_bytes",
+        "sufficient"
+      ],
+      "properties": {
+        "total_bytes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "used_bytes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "free_bytes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "free_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "minimum_free_bytes": { "type": "integer", "minimum": 1 },
+        "sufficient": { "type": "boolean" }
+      }
+    },
+    "archiveQueue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "active",
+        "ready_pending",
+        "oldest_pending_age_seconds",
+        "pending_items",
+        "pending_bytes",
+        "failed_error_counts",
+        "max_active",
+        "max_pending_age_seconds",
+        "healthy",
+        "reason_codes"
+      ],
+      "properties": {
+        "pending": { "$ref": "#/$defs/nonNegativeInteger" },
+        "running": { "$ref": "#/$defs/nonNegativeInteger" },
+        "completed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "failed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "active": { "$ref": "#/$defs/nonNegativeInteger" },
+        "ready_pending": { "$ref": "#/$defs/nonNegativeInteger" },
+        "oldest_pending_age_seconds": {
+          "$ref": "#/$defs/nullableNonNegativeNumber"
+        },
+        "pending_items": { "$ref": "#/$defs/nonNegativeInteger" },
+        "pending_bytes": { "$ref": "#/$defs/nonNegativeInteger" },
+        "failed_error_counts": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[A-Za-z0-9_.-]{1,80}$" },
+          "additionalProperties": { "$ref": "#/$defs/nonNegativeInteger" }
+        },
+        "max_active": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "max_pending_age_seconds": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 2592000
+        },
+        "healthy": { "type": "boolean" },
+        "reason_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "archive_queue_at_capacity",
+              "archive_failed_jobs",
+              "archive_pending_too_old"
+            ]
+          }
+        }
+      }
+    },
+    "notificationQueue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pending",
+        "running",
+        "delivered",
+        "failed",
+        "active",
+        "ready_pending",
+        "oldest_pending_age_seconds",
+        "failed_error_counts",
+        "enabled",
+        "max_active",
+        "max_pending_age_seconds",
+        "healthy",
+        "reason_codes"
+      ],
+      "properties": {
+        "pending": { "$ref": "#/$defs/nonNegativeInteger" },
+        "running": { "$ref": "#/$defs/nonNegativeInteger" },
+        "delivered": { "$ref": "#/$defs/nonNegativeInteger" },
+        "failed": { "$ref": "#/$defs/nonNegativeInteger" },
+        "active": { "$ref": "#/$defs/nonNegativeInteger" },
+        "ready_pending": { "$ref": "#/$defs/nonNegativeInteger" },
+        "oldest_pending_age_seconds": {
+          "$ref": "#/$defs/nullableNonNegativeNumber"
+        },
+        "failed_error_counts": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[A-Za-z0-9_.-]{1,80}$" },
+          "additionalProperties": { "$ref": "#/$defs/nonNegativeInteger" }
+        },
+        "enabled": { "type": "boolean" },
+        "max_active": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "max_pending_age_seconds": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 604800
+        },
+        "healthy": { "type": "boolean" },
+        "reason_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "notification_disabled_with_backlog",
+              "notification_queue_at_capacity",
+              "notification_failed_jobs",
+              "notification_pending_too_old"
+            ]
+          }
+        }
+      }
+    },
+    "gpu": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed",
+        "reason",
+        "device_index",
+        "memory_total_mib",
+        "memory_used_mib",
+        "memory_free_mib",
+        "utilization_percent"
+      ],
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "reason": {
+          "enum": [
+            "probe_unavailable",
+            "insufficient_free_vram",
+            "gpu_busy",
+            "gpu_capacity_available"
+          ]
+        },
+        "device_index": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "memory_total_mib": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "memory_used_mib": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "memory_free_mib": {
+          "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }]
+        },
+        "utilization_percent": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0, "maximum": 100 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gpu_guard_enabled",
+        "admission_allowed",
+        "reason_code",
+        "gpu"
+      ],
+      "properties": {
+        "gpu_guard_enabled": { "type": "boolean" },
+        "admission_allowed": {
+          "oneOf": [{ "type": "boolean" }, { "type": "null" }]
+        },
+        "reason_code": {
+          "enum": [
+            "gpu_guard_disabled",
+            "probe_unavailable",
+            "insufficient_free_vram",
+            "gpu_busy",
+            "gpu_capacity_available"
+          ]
+        },
+        "gpu": {
+          "oneOf": [{ "$ref": "#/$defs/gpu" }, { "type": "null" }]
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "remote_enabled",
+        "remote_upload_consent",
+        "remote_uploads_allowed",
+        "notification_enabled",
+        "external_notification_delivery_enabled",
+        "retention_scan_enabled",
+        "retention_delete_enabled"
+      ],
+      "properties": {
+        "remote_enabled": { "type": "boolean" },
+        "remote_upload_consent": { "type": "boolean" },
+        "remote_uploads_allowed": { "type": "boolean" },
+        "notification_enabled": { "type": "boolean" },
+        "external_notification_delivery_enabled": { "type": "boolean" },
+        "retention_scan_enabled": { "type": "boolean" },
+        "retention_delete_enabled": { "type": "boolean" }
+      }
+    }
+  }
+}

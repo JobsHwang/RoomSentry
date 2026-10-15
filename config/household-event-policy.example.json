@@ -1,0 +1,88 @@
+{
+  "package_id": "household_default_example",
+  "timezone": "Asia/Shanghai",
+  "rules": [
+    {
+      "rule_id": "possible_risk_notify",
+      "event_types": [
+        "possible_risk"
+      ],
+      "risk_levels": [
+        "high",
+        "medium"
+      ],
+      "review_statuses": [
+        "final",
+        "pending_review"
+      ],
+      "sink_ids": [
+        "shadow_local"
+      ],
+      "local_only": true,
+      "cameras": [],
+      "cooldown_seconds": 300.0,
+      "quiet_hours_suppress": false,
+      "quiet_hours_start": "22:00",
+      "quiet_hours_end": "07:00",
+      "aggregation_window_seconds": 600.0,
+      "aggregation_max_events": 3
+    },
+    {
+      "rule_id": "night_movement_low_priority",
+      "event_types": [
+        "adult_interaction",
+        "movement"
+      ],
+      "risk_levels": [
+        "low",
+        "none"
+      ],
+      "review_statuses": [
+        "final"
+      ],
+      "sink_ids": [
+        "shadow_local"
+      ],
+      "local_only": true,
+      "cameras": [],
+      "cooldown_seconds": 1800.0,
+      "quiet_hours_suppress": true,
+      "quiet_hours_start": "22:00",
+      "quiet_hours_end": "07:00",
+      "aggregation_window_seconds": 3600.0,
+      "aggregation_max_events": 2
+    },
+    {
+      "rule_id": "pending_high_attention",
+      "event_types": [
+        "crying",
+        "unknown"
+      ],
+      "risk_levels": [
+        "high"
+      ],
+      "review_statuses": [
+        "pending_review"
+      ],
+      "sink_ids": [
+        "shadow_local"
+      ],
+      "local_only": true,
+      "cameras": [],
+      "cooldown_seconds": 0.0,
+      "quiet_hours_suppress": false,
+      "quiet_hours_start": "22:00",
+      "quiet_hours_end": "07:00",
+      "aggregation_window_seconds": 0.0,
+      "aggregation_max_events": 1
+    }
+  ],
+  "version": 1,
+  "enabled": false,
+  "risk_inference": false,
+  "notification_delivery_authority": false,
+  "subject_identity_inference": false,
+  "source_media_included": false,
+  "paths_disclosed": false,
+  "policy_sha256": "cae00e2e0a06634699d3f1fbe4d60fb21b5dd68106fba9f49bd9466617306a4d"
+}

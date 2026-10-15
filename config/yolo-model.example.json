@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "backend": "ultralytics_yolo",
+  "model_id": "replace_with_reviewed_model_id",
+  "revision": "replace_with_pinned_revision",
+  "filename": "replace-with-reviewed-weight.pt",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "size_bytes": 1,
+  "source_url": "https://example.invalid/replace-with-reviewed-weight.pt",
+  "license_spdx": "LicenseRef-Replace-With-Upstream-License",
+  "license_url": "https://example.invalid/replace-with-upstream-license",
+  "labels": [
+    "person",
+    "cat",
+    "dog"
+  ],
+  "subject_identity_inference": false
+}

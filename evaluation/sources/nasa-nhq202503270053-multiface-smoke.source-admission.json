@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "source_id": "nasa_nhq202503270053_adult_multiface_smoke",
+  "asset_kind": "media_asset",
+  "canonical_url": "https://images-assets.nasa.gov/image/NHQ202503270053/NHQ202503270053~orig.jpg",
+  "accessed_on": "2026-08-11",
+  "source_revision": "NHQ202503270053",
+  "upstream_name": "NASA NHQ202503270053 official adult multi-person photograph",
+  "license": {
+    "name": "NASA Images and Media Usage Guidelines",
+    "spdx_id": null,
+    "terms_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+    "commercial_use": "restricted",
+    "modification": "restricted",
+    "redistribution": "restricted"
+  },
+  "access": {
+    "gated": "no",
+    "authentication_required": "no",
+    "expected_bytes": 8182266
+  },
+  "content": {
+    "observed_bytes": 8182266,
+    "sha256": "04f8e76b5f50e35fba9e8a8e3824763e3084f903b5bd1c2739fddd19ca6372c2"
+  },
+  "privacy": {
+    "real_minors": "no",
+    "faces": "yes",
+    "audio": "no",
+    "device_or_account_ids": "no",
+    "precise_timestamps": "yes",
+    "private_household_data": "no"
+  },
+  "labels": {
+    "origin": "publisher_description",
+    "human_verified": false,
+    "ground_truth": false
+  },
+  "admission": {
+    "tier": "B",
+    "status": "verified_local",
+    "purpose": "model_evaluation",
+    "requires_user_approval": true,
+    "user_approval_recorded": true,
+    "git_allowed": false,
+    "ci_allowed": false,
+    "redistribution_allowed": false,
+    "training_allowed": false,
+    "reviewed_on": "2026-08-11",
+    "blocker_codes": [],
+    "restriction_codes": [
+      "adult_identifiable_faces",
+      "local_only",
+      "nasa_attribution_required",
+      "no_training",
+      "precise_timestamp",
+      "publicity_rights_restricted"
+    ]
+  }
+}
